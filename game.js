@@ -137,7 +137,7 @@ function keyPressed() {
 //misspell a word
 function misspellString(input) {
   // 0 to 1
-  percentWrong = 0.2;
+  percentWrong = 1;
 
   //split in to words
   tempList = input.split(" ");
@@ -148,29 +148,47 @@ function misspellString(input) {
   indexs = shuffle([...Array(tempList.length).keys()]);
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
-    tempList[index] = swapLetters(tempList[index]);
+    //TODO:get random number and call associated scrambling method
+    tempList[index] = swapFrontAndBackLetters(tempList[index]);
   });
 
   //save misspell string
   wordsWrong = tempList.join(" ");
+}
 
-  function swapLetters(str) {
-    swap = Math.floor(Math.random() * Math.floor(str.length - 1));
-    return (
-      str.substring(0, swap) +
-      str[swap + 1] +
-      str[swap] +
-      str.substring(swap + 2)
-    );
+function swapRandomLetters(str) {
+  swap = Math.floor(Math.random() * Math.floor(str.length - 1));
+  return (
+    str.substring(0, swap) +
+    str[swap + 1] +
+    str[swap] +
+    str.substring(swap + 2)
+  );
+}
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+//do not call if it has 1 letter, as it cannot work
+function swapFrontAndBackLetters(str) {
+  if(str.length == 1) return; 
+  //get index of start and end letter
+  alteredString = str[str.length -1] + str.substring(1, str.length -1) + str[0]
+  return alteredString;
+}
+
+function scrambleEntireWord(str) {
+  //iterate through each letter of word, pick a random index to move the letter to a new string. update string 
+  for(let letterIndex = 0; letterIndex < str.length -1; letterIndex++) {
+    //generate random
+      
   }
 
-  function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
 }
 
 //Get accuracy
