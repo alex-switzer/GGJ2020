@@ -37,6 +37,13 @@ body {
 	display: inline;
 }
 
+#gameTextWrong {
+	font-family: 'Roboto', sans-serif;
+	color: red;
+	font-size: 28px;
+	display: inline; 
+}
+
 #gameText {
 	font-family: 'Roboto', sans-serif;
 	font-size: 28px;

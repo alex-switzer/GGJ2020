@@ -1,13 +1,14 @@
 window.addEventListener("load", loadPage);
 
-wordsCorrect = ";"
+wordsCorrect = "";
 words = "";
-cursor = 0;
+currentWord = 0;
 
 function loadPage() {
   // load ID
-  var gameText = document.getElementById("gameText");
   var gameTextTyped = document.getElementById("gameTextTyped");
+  var gameTextWrong = document.getElementById("gameTextWrong");
+  var gameText = document.getElementById("gameText");
   var inputText = document.getElementById("inputText");
 
   /*
@@ -34,19 +35,33 @@ function loadPage() {
 
   gameText.innerText = words;
   inputText.innerText = "";
-  inputText.addEventListener("keypress", keyPressed);
+  inputText.addEventListener("input", keyPressed);
 }
 
 function keyPressed(events) {
-  if (events.key == wordsCorrect.substring(cursor, cursor + 1)) {
-    cursor++;
-    if (events.keyCode == 32) {
-      events.target.value = "";
+
+  cursor = 0;
+  cursorWrong = 0;
+  mistype = false;
+
+  for (var i = 0; i < inputText.value.length; i++) {
+    if (inputText.value[i] == wordsCorrect[currentWord + i] && inputText.value[i] == ' ' && !mistype) {
+      currentWord += cursor + 1;
+      cursor = 0;
+      inputText.value = '';
+    }else if(inputText.value[i] == wordsCorrect[currentWord + i] && !mistype){
+      cursor++;
+    }else{
+      mistype = true;
+      cursorWrong++;
     }
   }
+  
 
-  gameTextTyped.innerText = words.slice(0, cursor);
-  gameText.innerText = words.slice(cursor);
+  gameTextTyped.innerText = words.slice(0,currentWord + cursor);
+  gameTextWrong.innerText = words.slice(currentWord + cursor, currentWord + cursor + cursorWrong);
+  gameText.innerText = words.slice(currentWord + cursor + cursorWrong);
+  
 }
 
 function makeString() {
@@ -55,20 +70,14 @@ function makeString() {
 
   input = "You must take life the way it comes at you and make the best of it";
   tempList = input.split(" ");
-  wordsCorrect = tempList.join(" ");
+  wordsCorrect = tempList.join(' ');
   
   indexs = shuffle([...Array(tempList.length).keys()])
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
     tempList[index] = swapLetters(tempList[index]);
   });
-
-
-  
-
-  words = tempList.join(" ");
-
-  
+  words = tempList.join(' ');
 
 }
 
