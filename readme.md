@@ -15,8 +15,8 @@
 
 - [ ] Bots/Race against the clock
 - [ ] Add progress animation
-- [ ] WPM Score
-- [ ] Accuracy Score
+- [X] WPM Score
+- [X] Accuracy Score
 - [ ] different style of misspellings. (Removal/addition of letter, switching of start/end letter, shuffling entire word, Rate of misspelling)
 - [ ] difficulty settings/game modes
 - [ ] Better web styling/UI
