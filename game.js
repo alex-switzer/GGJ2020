@@ -13,7 +13,7 @@ function loadPage() {
 
   //*
   //load texts
-  fetch("/texts.txt").then(function(response) {
+  fetch(window.location.href + "/texts.txt").then(function(response) {
     response.text().then(function(text) {
       //split by newlines
       list = text.split("\n");
@@ -21,7 +21,7 @@ function loadPage() {
       var rand = list[Math.floor(Math.random() * list.length)];
 
       //load picked file
-      fetch(rand).then(function(response2) {
+      fetch(window.location.href + rand).then(function(response2) {
         response2.text().then(function(text2) {
           //save the words
 
