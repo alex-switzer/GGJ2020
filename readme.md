@@ -9,8 +9,7 @@
 - [X] Load files for disk
 - [X] Show 
 - [ ] end card
-- [ ] start
-- [ ] fix UI
+- [ ] start card
 
 ### medium
 
