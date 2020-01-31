@@ -1,15 +1,16 @@
+//load the game when html is ready
 window.addEventListener("load", loadPage);
 
+//used to keep the correct string
 wordsCorrect = "";
+//used to keep the wrong string
 words = "";
+//ehat word is compleat
 currentWord = 0;
 
 function loadPage() {
-  // load ID
-  var gameTextTyped = document.getElementById("gameTextTyped");
-  var gameTextWrong = document.getElementById("gameTextWrong");
-  var gameText = document.getElementById("gameText");
-  var inputText = document.getElementById("inputText");
+
+  //TODO: load text to show
 
   /*
   //load texts
@@ -31,65 +32,91 @@ function loadPage() {
   });
   //*/
 
-  makeString()
+  //make the string misspelled
+  input = "You must take life the way it comes at you and make the best of it";
+  misspellString(input)
 
-  gameText.innerText = words;
-  inputText.innerText = "";
+  //add game hook
+  var inputText = document.getElementById("inputText");
   inputText.addEventListener("input", keyPressed);
+  //fix looks
+  keyPressed();
 }
 
-function keyPressed(events) {
+function keyPressed() {
 
+  //used to keep track of how meny letters are correct
   cursor = 0;
+  //used to keep track of how meny letters are wrong
   cursorWrong = 0;
-  mistype = false;
+  //has a key been wrong so far
+  hasMistype = false;
 
+  //loop thought all input
   for (var i = 0; i < inputText.value.length; i++) {
-    if (inputText.value[i] == wordsCorrect[currentWord + i] && inputText.value[i] == ' ' && !mistype) {
+    //is it a space
+    if (inputText.value[i] == wordsCorrect[currentWord + i] && inputText.value[i] == ' ' && !hasMistype) {
+      //move to next word
+      //add one for off by one
       currentWord += cursor + 1;
+      //reset local cursor
       cursor = 0;
+      //clear text box
       inputText.value = '';
-    }else if(inputText.value[i] == wordsCorrect[currentWord + i] && !mistype){
+    //correct leater
+    }else if(inputText.value[i] == wordsCorrect[currentWord + i] && !hasMistype){
+      //move local cursor
       cursor++;
+    //wrong leater
     }else{
-      mistype = true;
+      //set had wrong leater
+      hasMistype = true;
+      //move red cursor
       cursorWrong++;
     }
   }
   
-
+  //print words
   gameTextTyped.innerText = words.slice(0,currentWord + cursor);
   gameTextWrong.innerText = words.slice(currentWord + cursor, currentWord + cursor + cursorWrong);
   gameText.innerText = words.slice(currentWord + cursor + cursorWrong);
   
 }
 
-function makeString() {
+//misspell a word
+function misspellString(input) {
   // 0 to 1
   percentWrong = .2;
 
-  input = "You must take life the way it comes at you and make the best of it";
+  //split in to words
   tempList = input.split(" ");
+  //make correct string
   wordsCorrect = tempList.join(' ');
   
+  //pick words to misspell
   indexs = shuffle([...Array(tempList.length).keys()])
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
     tempList[index] = swapLetters(tempList[index]);
   });
+
+  //save misspell string
   words = tempList.join(' ');
 
-}
-
-function swapLetters(str) {
-  swap = Math.floor(Math.random() * Math.floor(str.length - 1));
-  return str.substring(0, swap) + str[swap + 1] + str[swap] + str.substring(swap+2)
-}
-
-function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
+  function swapLetters(str) {
+    swap = Math.floor(Math.random() * Math.floor(str.length - 1));
+    return str.substring(0, swap) + str[swap + 1] + str[swap] + str.substring(swap+2)
   }
-  return a;
+
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
 }
+
+
+
+
