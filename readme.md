@@ -14,10 +14,10 @@
 ### medium
 
 - [ ] Bots/Race against the clock
-- [ ] Add progress animation
-- [ ] WPM Score
-- [ ] Accuracy Score
-- [ ] different style of misspellings. (Removal/addition of letter, switching of start/end letter, shuffling entire word, Rate of misspelling)
+- [ ] Add progress animation(s). Use emojis progressing alone or something. 
+- [X] WPM Score
+- [X] Accuracy Score
+- [ ] different style of misspellings. (Styles include: Removal/addition of letter, switching of start/end letter, shuffling entire word, Rate of misspelling)
 - [ ] difficulty settings/game modes
 - [ ] Better web styling/UI
 
