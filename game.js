@@ -7,6 +7,7 @@ cursor = 0;
 function loadPage() {
   // load ID
   var gameText = document.getElementById("gameText");
+  var gameTextTyped = document.getElementById("gameTextTyped");
   var inputText = document.getElementById("inputText");
 
   /*
@@ -44,7 +45,8 @@ function keyPressed(events) {
     }
   }
 
-  gameText.innerText = words.slice(0, cursor) + "|" + words.slice(cursor);
+  gameTextTyped.innerText = words.slice(0, cursor);
+  gameText.innerText = words.slice(cursor);
 }
 
 function makeString() {
