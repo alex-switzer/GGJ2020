@@ -75,6 +75,10 @@ function keyPressed() {
       cursorWrong++;
     }
   }
+
+  if(currentWord + cursor == wordsCorrect.length){
+    alert('done')
+  }
   
   //print words
   gameTextTyped.innerText = words.slice(0,currentWord + cursor);
