@@ -13,6 +13,7 @@ body {
 	font-family: 'Roboto', sans-serif;
 	text-align: center;
 	text-decoration: underline;
+	margin: auto;
 }
 
 /* Container for game UI elements */
@@ -28,6 +29,7 @@ body {
 #gameStartHeader {
 	font-family: 'Roboto', sans-serif;
 	font-size: 40px;
+	
 }
 
 /* make the colour of the typed text different to give visual feedback to the user */
