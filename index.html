@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Misstype</title>
+<title>Mistype</title>
 <meta charset="UTF-8">
 
 <script src="game.js"></script> 
-<link rel="stylesheet" href="styles.css">
+<!-- Get google roboto font -->
+<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"> 
+<link rel="stylesheet" type="text/css" href="styles.css">
 
 </head>
+
 <body>
-
-  <h2 id="gameText">The quick brown fox jumped over the mmon</h2>
-
-  <form>
-    <input type="text" id="inputText">
-  </form>
-
+  <h1 id="gameHeader">Mistype - The Typing Game With Errors</h1>
+  <h1 id="gameStartHeader">Game Start</h1>
+  
+  <!--The box section containing the game elements-->
+  <div id="gameBoxContainer">
+	  <h2 id="gameTextTyped">The qucik brown</h2>
+	  <h2 id="gameText"> fox mujped over the mmon</h2>
+	  <form>
+		<input type="text" id="inputText" placeholder="Start typing here">
+	  </form>
+	 
+	  <h2 id="progressHeader">Completion Progress</h2>
+	  <img src="https://clipartwork.com/wp-content/uploads/2017/02/clipart-keyboard.png" id="keyboardProgressIcon" alt="keyboard">
+  </div>
 </body>
 </html> 

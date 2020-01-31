@@ -1,0 +1,72 @@
+body {
+	background-color: lightblue;
+}
+
+#gameHeader {
+	font-size: 45px;
+	font-family: 'Roboto', sans-serif;
+	text-align: center;
+	text-decoration: underline;
+	position:relative;
+	top:20px;
+}
+
+/* Container for game UI elements */
+#gameBoxContainer {
+	width: 1000px;
+	border: 2px solid black;
+	background-color: #e0e0e0;
+	padding: 10px;
+	margin: 10px;
+	border-radius: 10px;
+}
+
+#gameStartHeader {
+	font-family: 'Roboto', sans-serif;
+	font-size: 40px;
+	position:relative;
+	top:20px;
+	left:10px;
+}
+
+/* make the colour of the typed text different to give visual feedback to the user */
+#gameTextTyped {
+	font-family: 'Roboto', sans-serif;
+	color: gray;
+	font-size: 28px;
+	display: inline;
+}
+
+#gameText {
+	font-family: 'Roboto', sans-serif;
+	font-size: 28px;
+	display: inline; 
+}
+
+#progressHeader {
+	font-family: 'Roboto', sans-serif;
+	font-size: 28px;
+}
+
+#keyboardProgressIcon {
+	width: 150px;
+	height: 150px;
+	position:relative;
+	top:-60px;
+}
+
+input {
+	width: 100%;
+	padding: 12px 20px;
+    margin: 4px 0;
+	font-family: 'Roboto', sans-serif;
+	background-color: white;
+    box-sizing: border-box;
+	font-size: 20px;
+}
+
+/* Make it obvious when they click on the input box*/
+input[type=text]:focus {
+	background-color: #f2f3fc;
+	border: 2px solid black;
+}
