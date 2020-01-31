@@ -9,10 +9,9 @@ words = "";
 currentWord = 0;
 
 function loadPage() {
-
   //TODO: load text to show
 
-  /*
+  //*
   //load texts
   fetch("/texts.txt").then(function(response) {
     response.text().then(function(text) {
@@ -25,26 +24,36 @@ function loadPage() {
       fetch(rand).then(function(response2) {
         response2.text().then(function(text2) {
           //save the words
-          words = text2;
+
+          //make the string misspelled
+          misspellString(text2);
+
+          //add game hook
+          var inputText = document.getElementById("inputText");
+          inputText.addEventListener("input", keyPressed);
+          //fix looks
+          keyPressed();
         });
       });
     });
   });
   //*/
 
+  /*
   //make the string misspelled
   input = "You must take life the way it comes at you and make the best of it";
-  misspellString(input)
+  misspellString(input);
 
   //add game hook
   var inputText = document.getElementById("inputText");
   inputText.addEventListener("input", keyPressed);
   //fix looks
   keyPressed();
+
+  //*/
 }
 
 function keyPressed() {
-
   //used to keep track of how meny letters are correct
   cursor = 0;
   //used to keep track of how meny letters are wrong
@@ -55,20 +64,27 @@ function keyPressed() {
   //loop thought all input
   for (var i = 0; i < inputText.value.length; i++) {
     //is it a space
-    if (inputText.value[i] == wordsCorrect[currentWord + i] && inputText.value[i] == ' ' && !hasMistype) {
+    if (
+      inputText.value[i] == wordsCorrect[currentWord + i] &&
+      inputText.value[i] == " " &&
+      !hasMistype
+    ) {
       //move to next word
       //add one for off by one
       currentWord += cursor + 1;
       //reset local cursor
       cursor = 0;
       //clear text box
-      inputText.value = '';
-    //correct leater
-    }else if(inputText.value[i] == wordsCorrect[currentWord + i] && !hasMistype){
+      inputText.value = "";
+      //correct leater
+    } else if (
+      inputText.value[i] == wordsCorrect[currentWord + i] &&
+      !hasMistype
+    ) {
       //move local cursor
       cursor++;
-    //wrong leater
-    }else{
+      //wrong leater
+    } else {
       //set had wrong leater
       hasMistype = true;
       //move red cursor
@@ -76,51 +92,54 @@ function keyPressed() {
     }
   }
 
-  if(currentWord + cursor == wordsCorrect.length){
-    alert('done')
+  if (currentWord + cursor == wordsCorrect.length) {
+    alert("done");
   }
-  
+
   //print words
-  gameTextTyped.innerText = words.slice(0,currentWord + cursor);
-  gameTextWrong.innerText = words.slice(currentWord + cursor, currentWord + cursor + cursorWrong);
+  gameTextTyped.innerText = words.slice(0, currentWord + cursor);
+  gameTextWrong.innerText = words.slice(
+    currentWord + cursor,
+    currentWord + cursor + cursorWrong
+  );
   gameText.innerText = words.slice(currentWord + cursor + cursorWrong);
-  
 }
 
 //misspell a word
 function misspellString(input) {
   // 0 to 1
-  percentWrong = .2;
+  percentWrong = 0.2;
 
   //split in to words
   tempList = input.split(" ");
   //make correct string
-  wordsCorrect = tempList.join(' ');
-  
+  wordsCorrect = tempList.join(" ");
+
   //pick words to misspell
-  indexs = shuffle([...Array(tempList.length).keys()])
+  indexs = shuffle([...Array(tempList.length).keys()]);
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
     tempList[index] = swapLetters(tempList[index]);
   });
 
   //save misspell string
-  words = tempList.join(' ');
+  words = tempList.join(" ");
 
   function swapLetters(str) {
     swap = Math.floor(Math.random() * Math.floor(str.length - 1));
-    return str.substring(0, swap) + str[swap + 1] + str[swap] + str.substring(swap+2)
+    return (
+      str.substring(0, swap) +
+      str[swap + 1] +
+      str[swap] +
+      str.substring(swap + 2)
+    );
   }
 
   function shuffle(a) {
     for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
   }
 }
-
-
-
-
