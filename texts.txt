@@ -1,0 +1,24 @@
+Texts/Alice's Adventures in Wonderland.txt
+Texts/Avatar The last Airbender.txt
+Texts/Civilization IV.txt
+Texts/Civilization V.txt
+Texts/Democracy in America.txt
+Texts/Dr. Strangelove or How I Learned to Stop Worrying and Love the Bomb.txt
+Texts/Duck Soup.txt
+Texts/End of the beginning.txt
+Texts/Friends.txt
+Texts/Genesis 2.24 (NKJV).txt
+Texts/Life of Pi.txt
+Texts/Lisa.txt
+Texts/Mastering Computer Typing (1995).txt
+Texts/Monogatari Series.txt
+Texts/Ocean Rain.txt
+Texts/Return of the Jedi.txt
+Texts/The Arabian Nights.txt
+Texts/The Cat Who Could Read Backwards.txt
+Texts/The End.txt
+Texts/The Goo Goo Dolls.txt
+Texts/The Man in the High Castle.txt
+Texts/The Night Diary.txt
+Texts/UnSouled.txt
+Texts/V for Vendetta.txt
