@@ -1,22 +1,25 @@
 # Mistype
 
+> [Gamelink](https://daedricreign.github.io/GGJ2020/)
+
 ## todo
 
 ### high
 
-* Load files for disk
-* end card
-* start
-* fix UI
+- [X] Load files for disk
+- [X] Show 
+- [ ] end card
+- [ ] start
+- [ ] fix UI
 
 ### medium
 
-* Bot times
-* WPM
-* different misspellings
-* difficulty settings
+- [ ] Bot times
+- [ ] WPM
+- [ ] different misspellings
+- [ ] difficulty settings
 
 ### low
 
-* multiplayer
-* ???
+- [ ] multiplayer
+- [ ] ???
