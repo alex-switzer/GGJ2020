@@ -248,32 +248,6 @@ function updateProgressBar() {
 
   playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(Math.floor( (currentWord / textLength) * 10 ));
   playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(Math.floor( (playerPos / textLength) * 10 ));
-
-  /*
-
-  //When they make 10% closer to the goal and have not finished
-  percentCompletedSinceLastUpdate = (inputSuccessfulCharsTypedSinceLastUpdate  / charactersTotal);
-  if (percentCompletedSinceLastUpdate >= PROGRESS_INCREMENT && charactersCorrect != charactersTotal) {
-    var playerProgressBar = document.getElementById("playerProgressBar");
-    playerProgressBar.innerText += PROGRESS_EMOJI;
-    console.log("Updated progress bar!");
-
-    //rollover the excess progress to next time
-    rolloverPercentageComplete = percentCompletedSinceLastUpdate - 0.100;
-    successfulCharsTypedSinceLastUpdate = rolloverPercentageComplete*textLength;
-
-    console.log("rollover percentage is" + rolloverPercentageComplete);
-    console.log("rollover successfulCharsTypedSinceLastUpdate is " + successfulCharsTypedSinceLastUpdate);
-  }
-
-  //when they finish, add an emooji if it isn't already there
-  else if (currentWord + cursorCorrect == wordsCorrect.length & addedCompletionEmoji == false) {
-    var playerProgressBar = document.getElementById("playerProgressBar");
-    playerProgressBar.innerText += FINISHED_EMOJI; 
-    
-  }
-
-  //*/
 }
 
 //misspell a word
