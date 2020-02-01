@@ -91,6 +91,24 @@ a{
 	color: var(--link-color);
 }
 
+button {
+	font-size: 20px;
+	padding: 12px 20px;
+	margin: 4px 0;
+	box-sizing: border-box;
+}
+
+#inputPeerID {
+	padding: 12px 20px;
+    margin: 4px 0;
+	background-color: var(--input-color);
+    box-sizing: border-box;
+	font-size: 20px;
+}
+
+#openToLan {
+	display: inline;
+}
 
 #inputText {
 	width: 100%;

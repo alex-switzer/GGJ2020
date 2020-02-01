@@ -17,12 +17,12 @@ startTimeInMs = 0;
 endTimeInMs = 0;
 textWordCount = 0;
 
-//correct/incorrect character account 
+//correct/incorrect character account
 charactersCorrect = 0;
 charactersIncorrect = 0;
 
 //progress bar stuff
-const PROGRESS_INCREMENT = 0.10; //10% per emoji update
+const PROGRESS_INCREMENT = 0.1; //10% per emoji update
 const PROGRESS_ONE_EMOJI = "💦";
 const PROGRESS_TWO_EMOJI = "💥";
 const FINISHED_EMOJI = "🏁";
@@ -53,7 +53,7 @@ function loadPage() {
           textLength = text2.length;
 
           //Get the number of words in the text for WPM calculation
-          textWordCount = text2.split(' ').length;
+          textWordCount = text2.split(" ").length;
 
           //make the string misspelled
           misspellString(text2);
@@ -61,14 +61,13 @@ function loadPage() {
           //add game hook
           var inputText = document.getElementById("inputText");
           inputText.addEventListener("input", keyPressed);
-          
+
           gameText.innerText = wordsWrong;
 
           var inputOpenToLan = document.getElementById("inputOpenToLan");
           inputOpenToLan.addEventListener("click", openToLan);
           var inputConnectToLan = document.getElementById("inputConnectToLan");
           inputConnectToLan.addEventListener("click", connectToLan);
-
         });
       });
     });
@@ -80,33 +79,31 @@ function openToLan() {
     console.log("Can not reopent to lan");
     return;
   }
-  
+
   console.log("opening to lan");
+  document.getElementById("inputPeerID").disabled = true;
   peer = new Peer();
   peer.on("open", function(id) {
     console.log("My peer ID is: " + id);
     document.getElementById("gameID").innerText = id;
   });
 
-  peer.on('connection', function(conn) {
+  peer.on("connection", function(conn) {
     console.log("connected");
-    
+
     connOBJ = conn;
 
-    conn.on('data', function(data) {
-      console.log('Received ', data);
-      if(data == 'map'){
+    conn.on("data", function(data) {
+      console.log("Received ", data);
+      if (data == "map") {
         connOBJ.send(wordsCorrect);
         connOBJ.send(wordsWrong);
-        
-      }else{
+      } else {
         playerPos = data;
         updateProgressBar();
       }
-
     });
   });
-
 }
 
 function connectToLan() {
@@ -114,8 +111,14 @@ function connectToLan() {
     console.log("Can not reconnect to lan");
     return;
   }
+
+  if (document.getElementById("inputPeerID").value == "") {
+    return;
+  }
+
   console.log("connecting To Lan");
 
+  document.getElementById("inputPeerID").disabled = true;
 
   peer = new Peer();
   peer.on("open", function(id) {
@@ -124,17 +127,16 @@ function connectToLan() {
   });
 
   var conn = peer.connect(document.getElementById("inputPeerID").value);
-  conn.on('open', function() {
-
+  conn.on("open", function() {
     connOBJ = conn;
 
     // Receive messages
-    conn.on('data', function(data) {
-      console.log('Received ', data);
+    conn.on("data", function(data) {
+      console.log("Received ", data);
       switch (mapLoaded) {
         case 0:
           console.log("load 0 ");
-          
+
           wordsCorrect = data;
           mapLoaded++;
           break;
@@ -148,11 +150,10 @@ function connectToLan() {
           textLength = wordsCorrect.length;
 
           //Get the number of words in the text for WPM calculation
-          textWordCount = wordsCorrect.split(' ').length;
+          textWordCount = wordsCorrect.split(" ").length;
 
           break;
         default:
-
           playerPos = data;
           updateProgressBar();
           break;
@@ -160,7 +161,6 @@ function connectToLan() {
     });
 
     connOBJ.send("map");
-  
   });
 }
 
@@ -182,7 +182,7 @@ function keyPressed() {
       !hasMistype
     ) {
       successfulCharsTypedSinceLastUpdate += inputText.value.length;
-      
+
       //move to next word
       //add one for off by one
       currentWord += cursorCorrect + 1;
@@ -192,7 +192,8 @@ function keyPressed() {
       inputText.value = "";
       charactersCorrect++;
       //correct letter
-    } else if ( //If it is a correct letter, but not a complete word
+    } else if (
+      //If it is a correct letter, but not a complete word
       inputText.value[i] == wordsCorrect[currentWord + i] &&
       !hasMistype
     ) {
@@ -200,7 +201,8 @@ function keyPressed() {
       cursorCorrect++;
       charactersCorrect++;
       //wrong leater
-    } else { //when user puts in a wrong letter
+    } else {
+      //when user puts in a wrong letter
       //set had wrong leater
       hasMistype = true;
       //move red cursor
@@ -217,7 +219,7 @@ function keyPressed() {
     getEndTime();
     wpm = getWPM(startTimeInMs, endTimeInMs);
     accuracy = getAccuracy();
-  
+
     //Update the UI elements in the web page
     var WPMText = document.getElementById("WPM");
     WPMText.innerText = "WPM: " + wpm.toString();
@@ -227,7 +229,7 @@ function keyPressed() {
   }
 
   //move data
-  if (connOBJ != null) {    
+  if (connOBJ != null) {
     connOBJ.send(currentWord);
   }
   updateProgressBar(currentWord);
@@ -238,16 +240,21 @@ function keyPressed() {
     currentWord + cursorCorrect,
     currentWord + cursorCorrect + cursorWrong
   );
-  gameText.innerText = wordsWrong.slice(currentWord + cursorCorrect + cursorWrong);
+  gameText.innerText = wordsWrong.slice(
+    currentWord + cursorCorrect + cursorWrong
+  );
 }
 
 function updateProgressBar() {
-
   var playerOne = document.getElementById("playerOne");
   var playerTwo = document.getElementById("playerTwo");
 
-  playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(Math.floor( (currentWord / textLength) * 10 ));
-  playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(Math.floor( (playerPos / textLength) * 10 ));
+  playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(
+    Math.floor((currentWord / textLength) * 10)
+  );
+  playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(
+    Math.floor((playerPos / textLength) * 10)
+  );
 }
 
 //misspell a word
@@ -259,23 +266,24 @@ function misspellString(input) {
   tempList = input.split(" ");
   //make correct string
   wordsCorrect = tempList.join(" ");
-  
+
   //pick words to misspell
   indexs = shuffleArray([...Array(tempList.length).keys()]);
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
-    if(tempList[index].length != 0) //Only attempt to alter words that are more than 1 letter 
-    switch(Math.floor(Math.random() * 3)) {
-      case 0: //Scramble the entire word
-        tempList[index] = scrambleEntireWord(tempList[index]);
-        break;
-      case 1: //Swap a few random letters
-        tempList[index] = swapRandomLetters(tempList[index]);
-        break;
-      case 2: //swap front and back letters
-        tempList[index] = swapFrontAndBackLetters(tempList[index]);
-        break;
-    }    
+    if (tempList[index].length != 0)
+      //Only attempt to alter words that are more than 1 letter
+      switch (Math.floor(Math.random() * 3)) {
+        case 0: //Scramble the entire word
+          tempList[index] = scrambleEntireWord(tempList[index]);
+          break;
+        case 1: //Swap a few random letters
+          tempList[index] = swapRandomLetters(tempList[index]);
+          break;
+        case 2: //swap front and back letters
+          tempList[index] = swapFrontAndBackLetters(tempList[index]);
+          break;
+      }
   });
 
   //save misspell string
@@ -293,18 +301,16 @@ function shuffleArray(a) {
 function swapRandomLetters(str) {
   swap = Math.floor(Math.random() * Math.floor(str.length - 1));
   return (
-    str.substring(0, swap) +
-    str[swap + 1] +
-    str[swap] +
-    str.substring(swap + 2)
+    str.substring(0, swap) + str[swap + 1] + str[swap] + str.substring(swap + 2)
   );
 }
 
 //It will return strings with one letter
 function swapFrontAndBackLetters(str) {
-  if(str.length == 1) return str;
+  if (str.length == 1) return str;
   //get index of start and end letter
-  alteredString = str[str.length -1] + str.substring(1, str.length -1) + str[0]
+  alteredString =
+    str[str.length - 1] + str.substring(1, str.length - 1) + str[0];
   return alteredString;
 }
 
@@ -312,13 +318,15 @@ function scrambleEntireWord(str) {
   originalStrLength = str.length;
   scrambledWord = "";
 
-  //iterate through each letter of word, pick a random index to move the letter to a new string. update string 
-  for(let letterIndex = 0; letterIndex < originalStrLength; letterIndex++) {
+  //iterate through each letter of word, pick a random index to move the letter to a new string. update string
+  for (let letterIndex = 0; letterIndex < originalStrLength; letterIndex++) {
     randomIndex = Math.floor(Math.random() * str.length); //generate random
-    scrambledWord += str[randomIndex]; 
+    scrambledWord += str[randomIndex];
 
     //remove the letter from the original word
-    str = str.substring(0, randomIndex) + str.substring(randomIndex + 1, str.length);    
+    str =
+      str.substring(0, randomIndex) +
+      str.substring(randomIndex + 1, str.length);
   }
 
   return scrambledWord;
@@ -327,28 +335,29 @@ function scrambleEntireWord(str) {
 //Get accuracy
 function getAccuracy() {
   //get accuracy as a percentage
-  accuracy = (charactersCorrect / (charactersCorrect + charactersIncorrect))*100;
-  
+  accuracy =
+    (charactersCorrect / (charactersCorrect + charactersIncorrect)) * 100;
+
   //return a rounded number
-  return Math.floor((accuracy + Number.EPSILON) * 100) / 100
+  return Math.floor((accuracy + Number.EPSILON) * 100) / 100;
 }
 
-  //start the timer if it wasn't already
-  function getStartTime() {
-    if(startTimeInMs == 0) {
-      startTimeInMs = d.getTime(); //Get time in Ms from 1970 
-    }
+//start the timer if it wasn't already
+function getStartTime() {
+  if (startTimeInMs == 0) {
+    startTimeInMs = d.getTime(); //Get time in Ms from 1970
   }
+}
 
-  function getEndTime() {
-    d = new Date();
-    endTimeInMs = d.getTime();
-  }
+function getEndTime() {
+  d = new Date();
+  endTimeInMs = d.getTime();
+}
 
-  //Calculate and return the WPM that the user typed at
-  function getWPM(startTime, endTime) {
-    raceTimeInMinutes = ((endTimeInMs- startTimeInMs)/1000)/60;
-    WPM = textWordCount/raceTimeInMinutes;
+//Calculate and return the WPM that the user typed at
+function getWPM(startTime, endTime) {
+  raceTimeInMinutes = (endTimeInMs - startTimeInMs) / 1000 / 60;
+  WPM = textWordCount / raceTimeInMinutes;
 
-    return Math.floor((WPM + Number.EPSILON) * 100) / 100 //round excess decimal points
-  } 
+  return Math.floor((WPM + Number.EPSILON) * 100) / 100; //round excess decimal points
+}
