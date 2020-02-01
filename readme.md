@@ -17,7 +17,7 @@
 - [ ] Add progress animation(s). Use emojis progressing alone or something. 
 - [X] WPM Score
 - [X] Accuracy Score
-- [ ] different style of misspellings. (Styles include: Removal/addition of letter, switching of start/end letter, shuffling entire word, Rate of misspelling)
+- [X] different style of misspellings. (Styles include: Removal/addition of letter, switching of start/end letter, shuffling entire word, Rate of misspelling)
 - [ ] difficulty settings/game modes
 - [ ] Better web styling/UI
 

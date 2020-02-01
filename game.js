@@ -21,6 +21,14 @@ textWordCount = 0;
 charactersCorrect = 0;
 charactersIncorrect = 0;
 
+//progress bar stuff
+const PROGRESS_INCREMENT = 0.10; //10% per emoji update
+const PROGRESS_EMOJI = "💦";
+const FINISHED_EMOJI = "🏁";
+successfulCharsTypedSinceLastUpdate = 0;
+textLength = 0;
+addedCompletionEmoji = false;
+
 function loadPage() {
   //*
   //load texts
@@ -34,6 +42,9 @@ function loadPage() {
       //load picked file
       fetch(window.location.href + rand).then(function(response2) {
         response2.text().then(function(text2) {
+          //Get the text length
+          textLength = text2.length;
+
           //Get the number of words in the text for WPM calculation
           textWordCount = text2.split(' ').length;
 
@@ -83,6 +94,8 @@ function keyPressed() {
       inputText.value[i] == " " &&
       !hasMistype
     ) {
+      successfulCharsTypedSinceLastUpdate += inputText.value.length;
+      
       //move to next word
       //add one for off by one
       currentWord += cursorCorrect + 1;
@@ -91,6 +104,8 @@ function keyPressed() {
       //clear text box
       inputText.value = "";
       charactersCorrect++;
+
+      updateProgressBar(successfulCharsTypedSinceLastUpdate, textLength);
 
       //correct letter
     } else if ( //If it is a correct letter, but not a complete word
@@ -112,17 +127,20 @@ function keyPressed() {
 
   //When the user has completed the text
   if (currentWord + cursorCorrect == wordsCorrect.length) {
-    //Get the WPM of the user and display it to them
+    updateProgressBar();
+    addedCompletionEmoji = true;
+
+    //Get the WPM & Accuracy of the user and display it to them
     getEndTime();
     wpm = getWPM(startTimeInMs, endTimeInMs);
-
     accuracy = getAccuracy();
-    
-    //TODO: replace by placing it in UI instead
-    alert("Finished. Your WPM (Words Per Minute) was " + wpm + ". Your accuracy was " + accuracy);
+  
+    //Update the UI elements in the web page
+    var WPMText = document.getElementById("WPM");
+    WPMText.innerText = "WPM: " + wpm.toString();
 
-
-
+    var AccuracyText = document.getElementById("Accuracy");
+    AccuracyText.innerText = "Accuracy: " + accuracy + "%";
   }
 
   //print words
@@ -134,10 +152,39 @@ function keyPressed() {
   gameText.innerText = wordsWrong.slice(currentWord + cursorCorrect + cursorWrong);
 }
 
+function updateProgressBar(inputSuccessfulCharsTypedSinceLastUpdate, charactersTotal) {
+  console.log("testing for progress")
+  console.log("charactersTypedSinceUpdate = " + inputSuccessfulCharsTypedSinceLastUpdate);
+  console.log("charactersTotal = " + charactersTotal); //is the length of the text?
+  console.log("charactersCorrect" + charactersCorrect);
+
+  //When they make 10% closer to the goal and have not finished
+  percentCompletedSinceLastUpdate = (inputSuccessfulCharsTypedSinceLastUpdate  / charactersTotal);
+  if (percentCompletedSinceLastUpdate >= PROGRESS_INCREMENT && charactersCorrect != charactersTotal) {
+    var playerProgressBar = document.getElementById("playerProgressBar");
+    playerProgressBar.innerText += PROGRESS_EMOJI;
+    console.log("Updated progress bar!");
+
+    //rollover the excess progress to next time
+    rolloverPercentageComplete = percentCompletedSinceLastUpdate - 0.100;
+    successfulCharsTypedSinceLastUpdate = rolloverPercentageComplete*textLength;
+
+    console.log("rollover percentage is" + rolloverPercentageComplete);
+    console.log("rollover successfulCharsTypedSinceLastUpdate is " + successfulCharsTypedSinceLastUpdate);
+  }
+
+  //when they finish, add an emooji if it isn't already there
+  else if (currentWord + cursorCorrect == wordsCorrect.length & addedCompletionEmoji == false) {
+    var playerProgressBar = document.getElementById("playerProgressBar");
+    playerProgressBar.innerText += FINISHED_EMOJI; 
+    
+  }
+}
+
 //misspell a word
 function misspellString(input) {
-  // 0 to 1
-  percentWrong = 1;
+  //0.1 = 10%, etc
+  percentWrong = 0.5;
 
   //split in to words
   tempList = input.split(" ");
@@ -145,15 +192,33 @@ function misspellString(input) {
   wordsCorrect = tempList.join(" ");
   
   //pick words to misspell
-  indexs = shuffle([...Array(tempList.length).keys()]);
+  indexs = shuffleArray([...Array(tempList.length).keys()]);
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
-    //TODO:get random number and call associated scrambling method
-    tempList[index] = swapFrontAndBackLetters(tempList[index]);
+    if(tempList[index].length != 0) //Only attempt to alter words that are more than 1 letter 
+    switch(Math.floor(Math.random() * 3)) {
+      case 0: //Scramble the entire word
+        tempList[index] = scrambleEntireWord(tempList[index]);
+        break;
+      case 1: //Swap a few random letters
+        tempList[index] = swapRandomLetters(tempList[index]);
+        break;
+      case 2: //swap front and back letters
+        tempList[index] = swapFrontAndBackLetters(tempList[index]);
+        break;
+    }    
   });
 
   //save misspell string
   wordsWrong = tempList.join(" ");
+}
+
+function shuffleArray(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
 }
 
 function swapRandomLetters(str) {
@@ -166,29 +231,28 @@ function swapRandomLetters(str) {
   );
 }
 
-function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-//do not call if it has 1 letter, as it cannot work
+//It will return strings with one letter
 function swapFrontAndBackLetters(str) {
-  if(str.length == 1) return; 
+  if(str.length == 1) return str;
   //get index of start and end letter
   alteredString = str[str.length -1] + str.substring(1, str.length -1) + str[0]
   return alteredString;
 }
 
 function scrambleEntireWord(str) {
+  originalStrLength = str.length;
+  scrambledWord = "";
+
   //iterate through each letter of word, pick a random index to move the letter to a new string. update string 
-  for(let letterIndex = 0; letterIndex < str.length -1; letterIndex++) {
-    //generate random
-      
+  for(let letterIndex = 0; letterIndex < originalStrLength; letterIndex++) {
+    randomIndex = Math.floor(Math.random() * str.length); //generate random
+    scrambledWord += str[randomIndex]; 
+
+    //remove the letter from the original word
+    str = str.substring(0, randomIndex) + str.substring(randomIndex + 1, str.length);    
   }
 
+  return scrambledWord;
 }
 
 //Get accuracy
