@@ -32,9 +32,10 @@ make connecting less of a pain)
 - [X] different style of misspellings.
 - [ ] various difficulty settings/game modes
 - [ ] Better web styling/UI
+- [ ] Make a good text generator for infinite possibilities
 
 ### low
 - [ ] High score list/game playing statistics
-- [ ] Get longer and more texts
+- [X] Get longer and more texts.
 - [ ] Make code/comment refactorings for cleanliness/readability
 - [ ] ???
