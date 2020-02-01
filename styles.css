@@ -1,6 +1,6 @@
 
 :root {
-	--main-bg-color: lightblue;
+	--main-bg-color: rgba(233, 145, 44, 0.842);
 
 	--container-bg-color: #ffffff;
 	--container-text-color: #252525;
@@ -18,7 +18,7 @@
 	--input-color: #fafafa;
 	--input-focus-color: #eeeeee;
 	
-	--link-color: rgb(94, 94, 94);
+	--link-color: rgb(0, 0, 0);
 }
 
 body {
@@ -38,8 +38,8 @@ body {
 	background-color: var(--container-bg-color);
 	padding: 10px;
 	margin: auto;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	border-radius: 10px;
 }
 
@@ -127,4 +127,24 @@ button {
 
 .hide {
 	display: none;
+}
+
+.boxHeading {
+	font-size: 20px;
+	text-align: center;
+	text-decoration: underline;
+	margin: auto;
+}
+
+.links {
+	text-align: center;
+}
+
+#reload {
+  margin: auto 0 auto auto;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
 }

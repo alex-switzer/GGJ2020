@@ -31,11 +31,8 @@
 
 <body>
   <div class="page">
-    
-    <div class="container">
     <h1>Mistype - The Typing Game With Errors</h1>
-    </div>
-
+    
     <div class="container">
       <noscript>
         <h2>JS is needed to use Mistype</h2>
@@ -45,40 +42,41 @@
     </div>
 
     <div class="container">
-      <p>Racer's Progress</p> <!--🍆💦💦💦💦💦💦💦💦💦💦🏁-->
+      <h2 id="racerProgress" class="boxHeading">Racer's Progress</h2> 
       <h2>🍆<span id="playerOne"></span></h2>
       <h2 id="showable" class="hide"><span id="playerTwo"></span>🚀</h2>
     </div>
 
 
     <div class="container">
-      <h2 class="stats" id="WPM">
-        WPM : 
-      </h2>
-      <h2 class="stats" id="Accuracy">
-        Accuracy : 
-      </h2>
-      <button id="reload">Reload</button>
+      <h2 class="boxHeading">Race Statistics</h2>
+      <div class="row">
+        <h2 class="stats" id="WPM">
+          WPM: 
+        </h2>
+        <h2 class="stats" id="Accuracy">
+          Accuracy: 
+        </h2>
+        <button id="reload">Reload</button>
+      </div>
     </div>
 
     <div class="container">
+      <h2 class="boxHeading">Multiplayer Options</h2>
       <button id="inputOpenToLan">Open to lan</button>
-      <h3 id="openToLan">Peer ID : <span id="gameID"></span><br></h3>
+      <h3 id="openToLan">Peer ID: <span id="gameID"></span><br></h3>
       <input type="text" id="inputPeerID" placeholder="Peer ID" autocomplete="off">
       <button id="inputConnectToLan">Connect</button>
     </div>
 
-    <div class="container">
-      <h3>
-        Cool links
-      </h3>
-      <a href="https://github.com/daedricreign/GGJ2020">Github</a>
-      <a href="https://globalgamejam.org/">Global Game Jam</a>
-      <a href="https://www.fsf.org/">FSF</a>
-      <a href="https://libreboot.org/">Libreboot</a>
-      <a href="https://wiki.archlinux.org/">ArchWiki</a>
-      <a href="https://stallman.org/">Richard Stallman</a>
-    </div>
+
+      <a href="https://github.com/daedricreign/GGJ2020" class="links">Github</a>
+      <a href="https://globalgamejam.org/"class="links">Global Game Jam</a>
+      <a href="https://www.fsf.org/"class="links">FSF</a>
+      <a href="https://libreboot.org/"class="links">Libreboot</a>
+      <a href="https://wiki.archlinux.org/"class="links">ArchWiki</a>
+      <a href="https://stallman.org/"class="links">Richard Stallman</a>
+    
   </div>
 </body>
 </html> 
