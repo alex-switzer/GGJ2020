@@ -29,6 +29,11 @@ successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
 addedCompletionEmoji = false;
 
+//mutlyplayer
+var peer = null;
+var connOBJ = null;
+var mapLoaded = 0;
+
 function loadPage() {
   //*
   //load texts
@@ -57,24 +62,98 @@ function loadPage() {
           
           gameText.innerText = wordsWrong;
 
+          var inputOpenToLan = document.getElementById("inputOpenToLan");
+          inputOpenToLan.addEventListener("click", openToLan);
+          var inputConnectToLan = document.getElementById("inputConnectToLan");
+          inputConnectToLan.addEventListener("click", connectToLan);
+
         });
       });
     });
   });
-  //*/
+}
 
-  /*
-  //make the string misspelled
-  input = "You must take life the way it comes at you and make the best of it";
-  misspellString(input);
+function openToLan() {
+  if (peer != null) {
+    console.log("Can not reopent to lan");
+    return;
+  }
+  
+  console.log("opening to lan");
+  peer = new Peer();
+  peer.on("open", function(id) {
+    console.log("My peer ID is: " + id);
+    document.getElementById("gameID").innerText = id;
+  });
 
-  //add game hook
-  var inputText = document.getElementById("inputText");
-  inputText.addEventListener("input", keyPressed);
-  //fix looks
-  keyPressed();
+  peer.on('connection', function(conn) {
+    console.log("connected");
+    
+    connOBJ = conn;
 
-  //*/
+    conn.on('data', function(data) {
+      console.log('Received ', data);
+      if(data == 'map'){
+        connOBJ.send(wordsCorrect);
+        connOBJ.send(wordsWrong);
+        
+      }else{
+        document.getElementById("racers").innerText = data;
+      }
+
+    });
+  });
+
+}
+
+function connectToLan() {
+  if (peer != null) {
+    console.log("Can not reconnect to lan");
+    return;
+  }
+  console.log("connecting To Lan");
+
+
+  peer = new Peer();
+  peer.on("open", function(id) {
+    console.log("My peer ID is: " + id);
+    document.getElementById("gameID").innerText = id;
+  });
+
+  var conn = peer.connect(document.getElementById("inputPeerID").value);
+  conn.on('open', function() {
+
+    connOBJ = conn;
+
+    // Receive messages
+    conn.on('data', function(data) {
+      console.log('Received ', data);
+      switch (mapLoaded) {
+        case 0:
+          console.log("load 0 ");
+          
+          wordsCorrect = data;
+          mapLoaded++;
+          break;
+        case 1:
+          console.log("load 1 ");
+
+          wordsWrong = data;
+          gameText.innerText = wordsWrong;
+          mapLoaded++;
+          break;
+        default:
+
+          console.log("place ");
+
+          document.getElementById("racers").innerText = data;
+          break;
+      }
+    });
+
+    connOBJ.send("map");
+  
+  });
 }
 
 function keyPressed() {
@@ -141,6 +220,11 @@ function keyPressed() {
 
     var AccuracyText = document.getElementById("Accuracy");
     AccuracyText.innerText = "Accuracy: " + accuracy + "%";
+  }
+
+  //move data
+  if (connOBJ != null) {    
+    connOBJ.send('I am at ' + (currentWord + cursorCorrect));
   }
 
   //print words
