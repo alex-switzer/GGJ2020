@@ -82,7 +82,7 @@ function openToLan() {
 
   console.log("opening to lan");
   document.getElementById("inputPeerID").disabled = true;
-  peer = new Peer();
+  peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function(id) {
     console.log("My peer ID is: " + id);
     document.getElementById("gameID").innerText = id;
@@ -120,7 +120,7 @@ function connectToLan() {
 
   document.getElementById("inputPeerID").disabled = true;
 
-  peer = new Peer();
+  peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function(id) {
     console.log("My peer ID is: " + id);
     document.getElementById("gameID").innerText = id;
