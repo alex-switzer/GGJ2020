@@ -28,7 +28,9 @@ const PROGRESS_TWO_EMOJI = "💥";
 const FINISHED_EMOJI = "🏁";
 successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
-addedCompletionEmoji = false;
+var wpmInterval;
+var accuracyInterval;
+
 
 //mutlyplayer
 var peer = null;
@@ -105,7 +107,6 @@ function openToLan() {
     connOBJ = conn;
 
     conn.on("data", function(data) {
-      console.log("Received ", data);
       if (data == "map") {
         connOBJ.send(wordsCorrect);
         connOBJ.send(wordsWrong);
@@ -222,6 +223,7 @@ function connectToLan() {
 
 function keyPressed() {
   getStartTime();
+
   //used to keep track of how meny letters are correct
   cursorCorrect = 0;
   //used to keep track of how meny letters are wrong
@@ -269,26 +271,23 @@ function keyPressed() {
 
   //When the user has completed the text
   if (currentWord + cursorCorrect == wordsCorrect.length) {
-    addedCompletionEmoji = true;
-
-    //Get the WPM & Accuracy of the user and display it to them
-    getEndTime();
-    wpm = getWPM(startTimeInMs, endTimeInMs);
-    accuracy = getAccuracy();
-
-    //Update the UI elements in the web page
-    var WPMText = document.getElementById("WPM");
-    WPMText.innerText = "WPM: " + wpm.toString();
-
-    var AccuracyText = document.getElementById("Accuracy");
-    AccuracyText.innerText = "Accuracy: " + accuracy + "%";
+    //stop updating WPM & Accuracy
+    clearInterval(wpmInterval);
+    clearInterval(accuracyInterval);
+    
+    currentWord = wordsCorrect.length;
   }
 
-  //move data
+  //Send the current word that the player is on to the opponent
   if (connOBJ != null) {
     connOBJ.send(currentWord);
   }
-  updateProgressBar(currentWord);
+  else {
+    //bot race man
+
+  }
+
+  updateProgressBar(currentWord, cursorCorrect);
 
   //print words
   gameTextTyped.innerText = wordsWrong.slice(0, currentWord + cursorCorrect);
@@ -303,14 +302,20 @@ function keyPressed() {
 
 function updateProgressBar() {
   var playerOne = document.getElementById("playerOne");
-  var playerTwo = document.getElementById("playerTwo");
 
   playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(
     Math.floor((currentWord / textLength) * 10)
   );
+
   playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(
     Math.floor((playerPos / textLength) * 10)
   );
+
+  //if you finish
+  if(currentWord + cursorCorrect == wordsCorrect.length) { document.getElementById("playerOne").innerText += "😩"; }
+
+  //if the other player finishes
+  if(playerPos == textLength) { document.getElementById("playerTwo").innerText += "🌑"; }
 }
 
 //misspell a word
@@ -327,7 +332,7 @@ function misspellString(input) {
   indexs = shuffleArray([...Array(tempList.length).keys()]);
   indexs = indexs.slice(0, indexs.length * percentWrong);
   indexs.forEach(index => {
-    if (tempList[index].length != 0)
+    if (tempList[index].length >= 2)
       //Only attempt to alter words that are more than 1 letter
       switch (Math.floor(Math.random() * 3)) {
         case 0: //Scramble the entire word
@@ -392,7 +397,10 @@ function scrambleEntireWord(str) {
 function getAccuracy() {
   //get accuracy as a percentage
   accuracy =
-    (charactersCorrect / (charactersCorrect + charactersIncorrect)) * 100;
+    Math.round((charactersCorrect / (charactersCorrect + charactersIncorrect)) * 100);
+
+  var AccuracyText = document.getElementById("Accuracy");
+  AccuracyText.innerText = "Accuracy: " + accuracy + "%";
 
   //return a rounded number
   return Math.floor((accuracy + Number.EPSILON) * 100) / 100;
@@ -401,7 +409,10 @@ function getAccuracy() {
 //start the timer if it wasn't already
 function getStartTime() {
   if (startTimeInMs == 0) {
+    d = new Date();
     startTimeInMs = d.getTime(); //Get time in Ms from 1970
+    wpmInterval = setInterval(getWPM, 100);
+    accuracyInterval = setInterval(getAccuracy, 100);
   }
 }
 
@@ -411,9 +422,12 @@ function getEndTime() {
 }
 
 //Calculate and return the WPM that the user typed at
-function getWPM(startTime, endTime) {
-  raceTimeInMinutes = (endTimeInMs - startTimeInMs) / 1000 / 60;
-  WPM = textWordCount / raceTimeInMinutes;
+function getWPM(startTime) {
+  d = new Date();
+  raceTimeInMinutes = (d.getTime() - startTimeInMs) / 1000 / 60;
+  WPM = Math.round(textWordCount / raceTimeInMinutes);
 
+  var WPMText = document.getElementById("WPM");
+  WPMText.innerText = "WPM: " + WPM.toString();
   return Math.floor((WPM + Number.EPSILON) * 100) / 100; //round excess decimal points
 }
