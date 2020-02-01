@@ -124,3 +124,7 @@ button {
 	background-color: var(--input-focus-color);
 	border: 2px solid black;
 }
+
+.hide {
+	display: none;
+}

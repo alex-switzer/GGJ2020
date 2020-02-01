@@ -68,10 +68,18 @@ function loadPage() {
           inputOpenToLan.addEventListener("click", openToLan);
           var inputConnectToLan = document.getElementById("inputConnectToLan");
           inputConnectToLan.addEventListener("click", connectToLan);
+
+          var reloadOBJ = document.getElementById("reload");
+          reloadOBJ.addEventListener("click", reload);
+
         });
       });
     });
   });
+}
+
+function reload() {
+  location.reload();
 }
 
 function openToLan() {
@@ -81,7 +89,10 @@ function openToLan() {
   }
 
   console.log("opening to lan");
+  
   document.getElementById("inputPeerID").disabled = true;
+  document.getElementById("inputText").disabled = true;
+  
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function(id) {
     console.log("My peer ID is: " + id);
@@ -98,6 +109,28 @@ function openToLan() {
       if (data == "map") {
         connOBJ.send(wordsCorrect);
         connOBJ.send(wordsWrong);
+
+        document.getElementById("showable").classList = [];
+
+        setTimeout(function(){
+          document.getElementById("inputText").value = "5";
+          setTimeout(function(){ 
+            document.getElementById("inputText").value = "4";
+            setTimeout(function(){ 
+              document.getElementById("inputText").value = "3";
+              setTimeout(function(){ 
+                document.getElementById("inputText").value = "2";
+                setTimeout(function(){ 
+                  document.getElementById("inputText").value = "1";
+                  setTimeout(function(){ 
+                    document.getElementById("inputText").value = "";
+                    document.getElementById("inputText").disabled = false;
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            }, 1000);
+          }, 1000);
+        }, 1000);
       } else {
         playerPos = data;
         updateProgressBar();
@@ -119,6 +152,7 @@ function connectToLan() {
   console.log("connecting To Lan");
 
   document.getElementById("inputPeerID").disabled = true;
+  document.getElementById("inputText").disabled = true;
 
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function(id) {
@@ -151,6 +185,28 @@ function connectToLan() {
 
           //Get the number of words in the text for WPM calculation
           textWordCount = wordsCorrect.split(" ").length;
+
+          document.getElementById("showable").classList = [];
+
+          setTimeout(function(){
+            document.getElementById("inputText").value = "5";
+            setTimeout(function(){ 
+              document.getElementById("inputText").value = "4";
+              setTimeout(function(){ 
+                document.getElementById("inputText").value = "3";
+                setTimeout(function(){ 
+                  document.getElementById("inputText").value = "2";
+                  setTimeout(function(){ 
+                    document.getElementById("inputText").value = "1";
+                    setTimeout(function(){ 
+                      document.getElementById("inputText").value = "";
+                      document.getElementById("inputText").disabled = false;
+                    }, 1000);
+                  }, 1000);
+                }, 1000);
+              }, 1000);
+            }, 1000);
+          }, 1000);
 
           break;
         default:
