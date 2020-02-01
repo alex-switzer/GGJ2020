@@ -23,7 +23,8 @@ charactersIncorrect = 0;
 
 //progress bar stuff
 const PROGRESS_INCREMENT = 0.10; //10% per emoji update
-const PROGRESS_EMOJI = "💦";
+const PROGRESS_ONE_EMOJI = "💦";
+const PROGRESS_TWO_EMOJI = "💥";
 const FINISHED_EMOJI = "🏁";
 successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
@@ -33,6 +34,7 @@ addedCompletionEmoji = false;
 var peer = null;
 var connOBJ = null;
 var mapLoaded = 0;
+var playerPos = 0;
 
 function loadPage() {
   //*
@@ -98,7 +100,8 @@ function openToLan() {
         connOBJ.send(wordsWrong);
         
       }else{
-        document.getElementById("racers").innerText = data;
+        playerPos = data;
+        updateProgressBar();
       }
 
     });
@@ -141,12 +144,17 @@ function connectToLan() {
           wordsWrong = data;
           gameText.innerText = wordsWrong;
           mapLoaded++;
+
+          textLength = wordsCorrect.length;
+
+          //Get the number of words in the text for WPM calculation
+          textWordCount = wordsCorrect.split(' ').length;
+
           break;
         default:
 
-          console.log("place ");
-
-          document.getElementById("racers").innerText = data;
+          playerPos = data;
+          updateProgressBar();
           break;
       }
     });
@@ -183,9 +191,6 @@ function keyPressed() {
       //clear text box
       inputText.value = "";
       charactersCorrect++;
-
-      updateProgressBar(successfulCharsTypedSinceLastUpdate, textLength);
-
       //correct letter
     } else if ( //If it is a correct letter, but not a complete word
       inputText.value[i] == wordsCorrect[currentWord + i] &&
@@ -206,7 +211,6 @@ function keyPressed() {
 
   //When the user has completed the text
   if (currentWord + cursorCorrect == wordsCorrect.length) {
-    updateProgressBar();
     addedCompletionEmoji = true;
 
     //Get the WPM & Accuracy of the user and display it to them
@@ -224,8 +228,9 @@ function keyPressed() {
 
   //move data
   if (connOBJ != null) {    
-    connOBJ.send('I am at ' + (currentWord + cursorCorrect));
+    connOBJ.send(currentWord);
   }
+  updateProgressBar(currentWord);
 
   //print words
   gameTextTyped.innerText = wordsWrong.slice(0, currentWord + cursorCorrect);
@@ -236,11 +241,15 @@ function keyPressed() {
   gameText.innerText = wordsWrong.slice(currentWord + cursorCorrect + cursorWrong);
 }
 
-function updateProgressBar(inputSuccessfulCharsTypedSinceLastUpdate, charactersTotal) {
-  console.log("testing for progress")
-  console.log("charactersTypedSinceUpdate = " + inputSuccessfulCharsTypedSinceLastUpdate);
-  console.log("charactersTotal = " + charactersTotal); //is the length of the text?
-  console.log("charactersCorrect" + charactersCorrect);
+function updateProgressBar() {
+
+  var playerOne = document.getElementById("playerOne");
+  var playerTwo = document.getElementById("playerTwo");
+
+  playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(Math.floor( (currentWord / textLength) * 10 ));
+  playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(Math.floor( (playerPos / textLength) * 10 ));
+
+  /*
 
   //When they make 10% closer to the goal and have not finished
   percentCompletedSinceLastUpdate = (inputSuccessfulCharsTypedSinceLastUpdate  / charactersTotal);
@@ -263,6 +272,8 @@ function updateProgressBar(inputSuccessfulCharsTypedSinceLastUpdate, charactersT
     playerProgressBar.innerText += FINISHED_EMOJI; 
     
   }
+
+  //*/
 }
 
 //misspell a word
