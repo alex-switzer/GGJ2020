@@ -2,11 +2,15 @@
 
 > [Gamelink](https://daedricreign.github.io/GGJ2020/)
 
-## todo
+## ToDo
 
 ### high
 
-- [ ] Multiplayer features
+- [ ] Polish multiplayer mode (Only show second emoji once player joined, 
+refresh text for both players, 
+add finishing emoji, 
+show stats of both players during/finish race, 
+make connecting less of a pain)
 - [X] Load files for disk
 - [X] Show 
 - [ ] end card
