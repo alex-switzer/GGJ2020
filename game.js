@@ -43,6 +43,9 @@ var connOBJ = null;
 var mapLoaded = 0;
 var playerPos = 0;
 
+//hackry shit
+var nextKeyToPress = 'a';
+
 function loadPage() {
   //*
   //load texts
@@ -62,12 +65,15 @@ function loadPage() {
           //Get the number of words in the text for WPM calculation
           textWordCount = text2.split(" ").length;
 
+          nextKeyToPress = text2[0];
+
           //make the string misspelled
           misspellString(text2);
 
           //add game hook
           var inputText = document.getElementById("inputText");
           inputText.addEventListener("input", keyPressed);
+          inputText.addEventListener("keypress", onPress);
 
           gameText.innerText = wordsWrong;
 
@@ -117,6 +123,7 @@ function openToLan() {
         connOBJ.send(wordsWrong);
 
         document.getElementById("showable").classList = [];
+        nextKeyToPress = wordsCorrect[0];
 
         setTimeout(function(){
           document.getElementById("inputText").value = "5";
@@ -194,6 +201,7 @@ function connectToLan() {
           textWordCount = wordsCorrect.split(" ").length;
 
           document.getElementById("showable").classList = [];
+          nextKeyToPress = wordsCorrect[0];
 
           setTimeout(function(){
             document.getElementById("inputText").value = "5";
@@ -228,6 +236,14 @@ function connectToLan() {
   });
 }
 
+function onPress(event) {
+  if (event.key == nextKeyToPress) {
+    totalCharactersCorrect++;
+  }else{
+    totalCharactersIncorrect++;
+  }
+}
+
 function keyPressed() {
   getStartTime();
 
@@ -251,11 +267,12 @@ function keyPressed() {
       //move to next word
       //add one for off by one
       numPreviousCharactersCorrect += currentWordCharactersCorrect + 1;
+
+      nextKeyToPress = wordsCorrect[successfulCharsTypedSinceLastUpdate + 1]
       //reset local cursor
       currentWordCharactersCorrect = 0;
       //clear text box
       inputText.value = "";
-      totalCharactersCorrect++;
       //correct letter
     } else if (
       //If it is a correct letter, but not a complete word
@@ -264,8 +281,9 @@ function keyPressed() {
     ) {
       //move local cursor
       currentWordCharactersCorrect++;
-      totalCharactersCorrect++;
       
+      nextKeyToPress = wordsCorrect[successfulCharsTypedSinceLastUpdate + currentWordCharactersCorrect]
+
       console.log("here");
       //if they entered the last input character
       if((numPreviousCharactersCorrect + currentWordCharactersCorrect) == textLength) {
@@ -279,7 +297,6 @@ function keyPressed() {
       hasMistype = true;
       //move red cursor
       currentWordCharactersWrong++;
-      totalCharactersIncorrect++;
     }
   }
 
