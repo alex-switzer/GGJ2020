@@ -10,7 +10,6 @@
 - [ ] multiplayer: make it work more reliably. 
 - [ ] multiplayer: show stats of both players during/finish race
 - [ ] singleplayer mode to encourage competitiveness
-- [ ] Fix accuracy calculation (it is very wrong) (it also increases when deleting text)
 - [ ] start card/ Count down to start race. maybe a button to do so
 - [ ] Make code/comment refactorings for cleanliness/readability (Certainly, if this is not intended to be abandoned after today)
 - [ ] Some visual feedback/END CARD after finishing a race. Should encourage more racing
@@ -29,6 +28,7 @@
 
 
 ## Done Enough
+- [X] Fix accuracy calculation (it is very wrong) (it also increases when deleting text)
 - [X] change the emoji(s) for more family friendliness
 - [X] multiplayer: tell who wins the race
 - [X] Get a good selection of texts. 
