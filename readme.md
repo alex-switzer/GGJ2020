@@ -5,7 +5,6 @@
 ## ToDo
 
 ### Important & Urgent
-- [ ] multiplayer: tell who wins the race
 
 ### Important (High > Low)
 - [ ] multiplayer: make it work more reliably. 
@@ -31,7 +30,7 @@
 
 ## Done Enough
 - [X] change the emoji(s) for more family friendliness
-
+- [X] multiplayer: tell who wins the race
 - [X] Get a good selection of texts. 
 - [X] multiplayer: Only show second emoji once player joined 
 - [X] multiplayer: refresh text for both players

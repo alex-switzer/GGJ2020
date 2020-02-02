@@ -284,10 +284,11 @@ function keyPressed() {
       
       nextKeyToPress = wordsCorrect[successfulCharsTypedSinceLastUpdate + currentWordCharactersCorrect]
 
-      console.log("here");
       //if they entered the last input character
       if((numPreviousCharactersCorrect + currentWordCharactersCorrect) == textLength) {
         document.getElementById("playerOneCharacter").innerText += FINISHED_ONE_EMOJI; 
+        document.getElementById("inputText").disabled = true;
+        document.getElementById("inputText").value = "You win!";
       }
     } 
     //wrong letter
@@ -343,7 +344,13 @@ function updateProgressBar() {
   );
   
   //if the other player finishes
-  if(playerPos == textLength) { document.getElementById("playerTwoCharacter").innerText += FINISHED_TWO_EMOJI; }
+  console.log("here");
+  
+  if(playerPos == textLength) {
+    document.getElementById("playerTwo").innerText += FINISHED_TWO_EMOJI;
+    document.getElementById("inputText").disabled = true;
+    document.getElementById("inputText").value = "Sorry you not a winner!";
+  }
 }
 
 //misspell a word
