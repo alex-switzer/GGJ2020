@@ -350,6 +350,8 @@ function updateProgressBar() {
     document.getElementById("playerTwo").innerText += FINISHED_TWO_EMOJI;
     document.getElementById("inputText").disabled = true;
     document.getElementById("inputText").value = "Sorry you not a winner!";
+    clearInterval(wpmInterval);
+    clearInterval(accuracyInterval);
   }
 }
 
