@@ -7,7 +7,7 @@ wordsCorrect = "";
 wordsWrong = "";
 
 //what word is complete
-currentWord = 0;
+numPreviousCharactersCorrect = 0;
 
 //time object to calculate wpm
 var d = new Date();
@@ -17,15 +17,20 @@ startTimeInMs = 0;
 endTimeInMs = 0;
 textWordCount = 0;
 
-//correct/incorrect character account
-charactersCorrect = 0;
-charactersIncorrect = 0;
+//correct/incorrect character amount
+totalCharactersCorrect = 0;
+totalCharactersIncorrect = 0;
 
 //progress bar stuff
 const PROGRESS_INCREMENT = 0.1; //10% per emoji update
-const PROGRESS_ONE_EMOJI = "💦";
+const PROGRESS_ONE_EMOJI = "💨";
 const PROGRESS_TWO_EMOJI = "💥";
-const FINISHED_EMOJI = "🏁";
+const FINISHED_ONE_EMOJI = "🏁";
+const FINISHED_TWO_EMOJI = "🌑";
+const PLAYER_ONE_EMOJI = "🚎";
+const PLAYER_TWO_EMOJI = "🚀";
+
+
 successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
 var wpmInterval;
@@ -225,9 +230,9 @@ function keyPressed() {
   getStartTime();
 
   //used to keep track of how meny letters are correct
-  cursorCorrect = 0;
+  currentWordCharactersCorrect = 0;
   //used to keep track of how meny letters are wrong
-  cursorWrong = 0;
+  currentWordCharactersWrong = 0;
   //has a key been wrong so far
   hasMistype = false;
 
@@ -235,7 +240,7 @@ function keyPressed() {
   for (var i = 0; i < inputText.value.length; i++) {
     //When they press space after correctly typing the word
     if (
-      inputText.value[i] == wordsCorrect[currentWord + i] &&
+      inputText.value[i] == wordsCorrect[numPreviousCharactersCorrect + i] &&
       inputText.value[i] == " " &&
       !hasMistype
     ) {
@@ -243,60 +248,67 @@ function keyPressed() {
 
       //move to next word
       //add one for off by one
-      currentWord += cursorCorrect + 1;
+      numPreviousCharactersCorrect += currentWordCharactersCorrect + 1;
       //reset local cursor
-      cursorCorrect = 0;
+      currentWordCharactersCorrect = 0;
       //clear text box
       inputText.value = "";
-      charactersCorrect++;
+      totalCharactersCorrect++;
       //correct letter
     } else if (
       //If it is a correct letter, but not a complete word
-      inputText.value[i] == wordsCorrect[currentWord + i] &&
+      inputText.value[i] == wordsCorrect[numPreviousCharactersCorrect + i] &&
       !hasMistype
     ) {
       //move local cursor
-      cursorCorrect++;
-      charactersCorrect++;
-      //wrong leater
-    } else {
+      currentWordCharactersCorrect++;
+      totalCharactersCorrect++;
+      
+      console.log("here");
+      //if they entered the last input character
+      if((numPreviousCharactersCorrect + currentWordCharactersCorrect) == textLength) {
+        document.getElementById("playerOneCharacter").innerText += FINISHED_ONE_EMOJI; 
+      }
+    } 
+    //wrong letter
+    else {
       //when user puts in a wrong letter
       //set had wrong leater
       hasMistype = true;
       //move red cursor
-      cursorWrong++;
-      charactersIncorrect++;
+      currentWordCharactersWrong++;
+      totalCharactersIncorrect++;
     }
   }
 
   //When the user has completed the text
-  if (currentWord + cursorCorrect == wordsCorrect.length) {
+  if (numPreviousCharactersCorrect + currentWordCharactersCorrect == wordsCorrect.length) {
     //stop updating WPM & Accuracy
     clearInterval(wpmInterval);
     clearInterval(accuracyInterval);
     
-    currentWord = wordsCorrect.length;
+    numPreviousCharactersCorrect = wordsCorrect.length;
   }
 
   //Send the current word that the player is on to the opponent
   if (connOBJ != null) {
-    connOBJ.send(currentWord);
+    connOBJ.send(numPreviousCharactersCorrect);
   }
   else {
     //bot race man
 
   }
 
-  updateProgressBar(currentWord, cursorCorrect);
+  updateProgressBar(numPreviousCharactersCorrect, currentWordCharactersCorrect);
 
   //print words
-  gameTextTyped.innerText = wordsWrong.slice(0, currentWord + cursorCorrect);
+  gameTextTyped.innerText = wordsWrong.slice(0, numPreviousCharactersCorrect + currentWordCharactersCorrect);
   gameTextWrong.innerText = wordsWrong.slice(
-    currentWord + cursorCorrect,
-    currentWord + cursorCorrect + cursorWrong
+    numPreviousCharactersCorrect + currentWordCharactersCorrect,
+    numPreviousCharactersCorrect + currentWordCharactersCorrect + currentWordCharactersWrong
   );
   gameText.innerText = wordsWrong.slice(
-    currentWord + cursorCorrect + cursorWrong
+    numPreviousCharactersCorrect + currentWordCharactersCorrect + currentWordCharactersWrong
   );
 }
 
@@ -304,18 +316,15 @@ function updateProgressBar() {
   var playerOne = document.getElementById("playerOne");
 
   playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(
-    Math.floor((currentWord / textLength) * 10)
+    Math.floor((numPreviousCharactersCorrect / textLength) * 10)
   );
 
   playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(
     Math.floor((playerPos / textLength) * 10)
   );
-
-  //if you finish
-  if(currentWord + cursorCorrect == wordsCorrect.length) { document.getElementById("playerOne").innerText += "😩"; }
-
+  
   //if the other player finishes
-  if(playerPos == textLength) { document.getElementById("playerTwo").innerText += "🌑"; }
+  if(playerPos == textLength) { document.getElementById("playerTwoCharacter").innerText += FINISHED_TWO_EMOJI; }
 }
 
 //misspell a word
@@ -397,7 +406,7 @@ function scrambleEntireWord(str) {
 function getAccuracy() {
   //get accuracy as a percentage
   accuracy =
-    Math.round((charactersCorrect / (charactersCorrect + charactersIncorrect)) * 100);
+    Math.round((totalCharactersCorrect / (totalCharactersCorrect + totalCharactersIncorrect)) * 100);
 
   var AccuracyText = document.getElementById("Accuracy");
   AccuracyText.innerText = "Accuracy: " + accuracy + "%";
