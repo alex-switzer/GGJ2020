@@ -126,6 +126,7 @@ function openToLan() {
                   setTimeout(function(){ 
                     document.getElementById("inputText").value = "";
                     document.getElementById("inputText").disabled = false;
+                    document.getElementById("inputText").focus();
                   }, 1000);
                 }, 1000);
               }, 1000);
@@ -202,6 +203,7 @@ function connectToLan() {
                     setTimeout(function(){ 
                       document.getElementById("inputText").value = "";
                       document.getElementById("inputText").disabled = false;
+                      document.getElementById("inputText").focus();
                     }, 1000);
                   }, 1000);
                 }, 1000);
