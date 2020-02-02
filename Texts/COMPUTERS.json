@@ -1,0 +1,101 @@
+{
+    "phrases":[
+        "#shock_sound#, the #server_name# server is being #attacks# on port #port#. use #defender# to stop the #hacker#.",
+        "#hacker# dected. #tools# found on #server_name# server. Automatically used #defender#. #name# will be #informed#.",
+        "#protocol# disabled. #name# #informed#. please use #tools# for the now."
+    ],
+    "hacker":[
+        "hacker",
+        "attacker",
+        "opponent"
+    ],
+    "server_name":[
+        "alpha",
+        "beta",
+        "omega",
+        "#name#'s",
+        "#numbers#",
+        "apache"
+    ],
+    "numbers":[
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+    ],
+    "port":[
+        "80",
+        "8080",
+        "443"
+    ],
+    "protocol":[
+        "HTTP",
+        "HTTPS",
+        "pop",
+        "DNS",
+        "bittorrent",
+        "SSH",
+        "FTP"
+    ],
+    "tools":[
+        "Nmap",
+        "GUN+linux",
+        "GUN/linux",
+        "linux",
+        "GNU",
+        "windows",
+        "IMB power pc",
+        "firefox",
+        "notpad",
+        "GDB"
+    ],
+    "attacks":[
+        "Brute-force attacked",
+        "DDOS",
+        "dictionary attacked",
+        "layer 7 attacked",
+        "root kit",
+        "zero day",
+        "Low orbit ion cannon",
+        "man in the middle attack",
+        "a keylogger",
+        "reverse proxy",
+        "cut the fucking power cables"
+    ],
+    "shock_sound":[
+        "oh no #name# is here",
+        "there is a porblim",
+        "send help"
+    ],
+    "defender":[
+        "windows firewall",
+        "disable the #protocol# protocol",
+        "press the power putton",
+        "re-route packits",
+        "#attacks# back at them",
+        "firewall"
+    ],
+    "name":[
+        "Surprise",
+        "Voodoo",
+        "Chimera",
+        "Nightowl",
+        "Void"
+    ],
+    "informed":[
+        "informed",
+        "told",
+        "messaged",
+        "emailed",
+        "contacted",
+        "contacted on IRC"
+    ]
+
+}
+
