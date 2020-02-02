@@ -6,20 +6,18 @@
 
 ### Important & Urgent
 - [ ] multiplayer: tell who wins the race
-- [ ] Make final emoji appear upon immediate completion. Should not need to press space.
 
 ### Important (High > Low)
 - [ ] multiplayer: make it work more reliably. 
 - [ ] multiplayer: show stats of both players during/finish race
 - [ ] singleplayer mode to encourage competitiveness
-- [ ] Fix accuracy increase when deleting text
+- [ ] Fix accuracy calculation (it is very wrong) (it also increases when deleting text)
 - [ ] start card/ Count down to start race. maybe a button to do so
 - [ ] Make code/comment refactorings for cleanliness/readability (Certainly, if this is not intended to be abandoned after today)
 - [ ] Some visual feedback/END CARD after finishing a race. Should encourage more racing
 - [ ] multiplayer: polish finishing emoji feature
 
 ### Urgent
-- [ ] change the emoji(s) for more family friendliness
 - [ ] GGJ stuff. Make a 90 sec video and put on YT. Take more screenshots, etc. 
 
 ### Neither/Maybe Should Implement
@@ -32,6 +30,8 @@
 
 
 ## Done Enough
+- [X] change the emoji(s) for more family friendliness
+
 - [X] Get a good selection of texts. 
 - [X] multiplayer: Only show second emoji once player joined 
 - [X] multiplayer: refresh text for both players
@@ -44,3 +44,4 @@
 - [X] WPM Score
 - [X] Accuracy Score
 - [X] different style of misspellings.
+- [X] Make final emoji appear upon immediate completion. Should not need to press space.
