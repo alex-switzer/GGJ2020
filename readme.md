@@ -11,15 +11,16 @@
 - [ ] multiplayer: show stats of both players during/finish race
 - [ ] singleplayer mode to encourage competitiveness
 - [ ] start card/ Count down to start race. maybe a button to do so
-- [ ] Make code/comment refactorings for cleanliness/readability (Certainly, if this is not intended to be abandoned after today)
+- [ ] Make code/comment refactorings for cleanliness/readability/maintainability (Certainly, if this is not intended to be abandoned after today)
 - [ ] Some visual feedback/END CARD after finishing a race. Should encourage more racing
 - [ ] multiplayer: polish finishing emoji feature
+- [ ] Correct the bee-movie texts that have words with 'O' replacing certain characters. E.g. "Oongratulations" -> "Congratulations"
+- [ ] Put some sort of introduction to tell people how to play
 
 ### Urgent
-- [ ] GGJ stuff. Make a 90 sec video and put on YT. Take more screenshots, etc. 
 
 ### Neither/Maybe Should Implement
-- [ ] Show which emoji is you. 
+- [X] Show which emoji is you. 
 - [ ] various difficulty settings/game modes
 - [ ] Better web styling/UI
 - [ ] Make a good text generator for infinite possibilities

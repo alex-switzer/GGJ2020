@@ -15,7 +15,6 @@ var d = new Date();
 //Time/word count variables for WPM calculation
 startTimeInMs = 0;
 endTimeInMs = 0;
-textWordCount = 0;
 
 //correct/incorrect character amount
 totalCharactersCorrect = 0;
@@ -37,38 +36,35 @@ var wpmInterval;
 var accuracyInterval;
 
 
-//mutlyplayer
+//mutliplayer
 var peer = null;
 var connOBJ = null;
 var mapLoaded = 0;
 var playerPos = 0;
 
-//hackry shit
+//hackey shit
 var nextKeyToPress = 'a';
 
 function loadPage() {
-  //*
-  //load texts
-  fetch(window.location.href + "/texts.txt").then(function(response) {
-    response.text().then(function(text) {
+  //load the file of URIs of each text to read later
+  fetch(window.location.href + "/texts.txt").then(function(response) { 
+    response.text().then(function(URIsOfTexts) {
       //split by newlines
-      list = text.split("\n");
-      //pick random
-      var rand = list[Math.floor(Math.random() * list.length)];
+      listOfURIsOfTexts = URIsOfTexts.split("\n");
+      
+      //pick a random text
+      var randomTextURI = listOfURIsOfTexts[Math.floor(Math.random() * listOfURIsOfTexts.length)];
 
-      //load picked file
-      fetch(window.location.href + rand).then(function(response2) {
-        response2.text().then(function(text2) {
+      //load the random text
+      fetch(window.location.href +randomTextURI).then(function(response2) {
+        response2.text().then(function(textToType) {
           //Get the text length
-          textLength = text2.length;
+          textLength = textToType.length;
 
-          //Get the number of words in the text for WPM calculation
-          textWordCount = text2.split(" ").length;
+          nextKeyToPress = textToType[0];
 
-          nextKeyToPress = text2[0];
-
-          //make the string misspelled
-          misspellString(text2);
+          //make the text to type misspelled
+          misspellString(textToType);
 
           //add game hook
           var inputText = document.getElementById("inputText");
@@ -196,9 +192,6 @@ function connectToLan() {
           mapLoaded++;
 
           textLength = wordsCorrect.length;
-
-          //Get the number of words in the text for WPM calculation
-          textWordCount = wordsCorrect.split(" ").length;
 
           document.getElementById("showable").classList = [];
           nextKeyToPress = wordsCorrect[0];
@@ -335,16 +328,17 @@ function keyPressed() {
 function updateProgressBar() {
   var playerOne = document.getElementById("playerOne");
 
+  //If there is enough progress, update the progress bar
+  if(((numPreviousCharactersCorrect / textLength) * 10) >=1)
   playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(
     Math.floor((numPreviousCharactersCorrect / textLength) * 10)
   );
 
+  //Do the same for the other player
+  if(((playerPos / textLength) * 10) >=1 )
   playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(
     Math.floor((playerPos / textLength) * 10)
   );
-  
-  //if the other player finishes
-  console.log("here");
   
   if(playerPos == textLength) {
     document.getElementById("playerTwo").innerText += FINISHED_TWO_EMOJI;
@@ -462,7 +456,10 @@ function getEndTime() {
 function getWPM(startTime) {
   d = new Date();
   raceTimeInMinutes = (d.getTime() - startTimeInMs) / 1000 / 60;
-  WPM = Math.round(textWordCount / raceTimeInMinutes);
+  CPM = Math.round(textLength / raceTimeInMinutes);  //characters per minute
+
+  AVERAGE_WORD_LENGTH = 4.79; //According to a 'rocket engineer' on quora 
+  WPM = Math.round(CPM/AVERAGE_WORD_LENGTH);
 
   var WPMText = document.getElementById("WPM");
   WPMText.innerText = "WPM: " + WPM.toString();
