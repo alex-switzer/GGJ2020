@@ -19,6 +19,9 @@
 	--input-focus-color: #eeeeee;
 	
 	--link-color: rgb(0, 0, 0);
+
+	--slider-color: rgb(151, 151, 151);
+	--slider-handle: rgb(255, 0, 0);
 }
 
 body {
@@ -98,25 +101,49 @@ button {
 	box-sizing: border-box;
 }
 
+#inputConnectToLan {
+	margin-left: 15px;
+}
+
 #inputPeerID {
+	display: inline;
 	padding: 12px 20px;
-    margin: 4px 0;
+    margin: 4px 0; 
 	background-color: var(--input-color);
     box-sizing: border-box;
 	font-size: 20px;
 }
 
 #openToLan {
+	padding-left: 15px;
 	display: inline;
 }
 
 #inputText {
 	width: 100%;
 	padding: 12px 20px;
-    margin: 4px 0;
+    margin: 4px 0; 
 	background-color: var(--input-color);
     box-sizing: border-box;
 	font-size: 20px;
+}
+
+#hostGameHeading {
+	text-decoration: underline;
+}
+
+#joinGameHeading {
+	text-decoration: underline;
+}
+
+#playerOneProgressBar{
+	font-size: 35px;
+	display: inline;
+}
+
+#opponentProgressBar {
+	font-size: 34px;
+	display: inline;
 }
 
 /* Make it obvious when they click on the input box*/
@@ -125,8 +152,35 @@ button {
 	border: 2px solid black;
 }
 
-.hide {
-	display: none;
+#botWPMSlider {
+  -webkit-appearance: none;
+  width: 100%; /* Full-width */
+  height: 25px; /* Specified height */
+  background: var(--slider-color);
+  outline: none;
+  opacity: 0.6;
+  transition: opacity .1s;
+}
+
+#botWPMSlider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 25px;
+	height: 25px;
+	background: var(--slider-handle)
+}
+
+#botWPMSlider:hover {
+	opacity: 1;
+}
+
+#botTypingSpeed {
+	font-size: 20px;
+	margin-top: 15px;
+}
+
+.subHeading {
+	text-decoration: underline;
 }
 
 .boxHeading {

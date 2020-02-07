@@ -1,12 +1,8 @@
-//load the game when html is ready
-window.addEventListener("load", loadPage);
-
-//used to keep the correct string
+//Holds the normal and misspelled versions of the full text
 wordsCorrect = "";
-//used to keep the wrong string
 wordsWrong = "";
 
-//what word is complete
+//The number of characters that have been correctly typed, not including the current word the user is typing
 numPreviousCharactersCorrect = 0;
 
 //time object to calculate wpm
@@ -21,20 +17,18 @@ totalCharactersCorrect = 0;
 totalCharactersIncorrect = 0;
 
 //progress bar stuff
-const PROGRESS_INCREMENT = 0.1; //10% per emoji update
-const PROGRESS_ONE_EMOJI = "💨";
-const PROGRESS_TWO_EMOJI = "💥";
-const FINISHED_ONE_EMOJI = "🏁";
-const FINISHED_TWO_EMOJI = "🌑";
-const PLAYER_ONE_EMOJI = "🚎";
-const PLAYER_TWO_EMOJI = "🚀";
-
+const REMAINING_PROGRESS_EMOJI = "🟦"; //it has the same width as the player and opponent emojis so the flag doesn't move around
+const PLAYER_ONE_PROGRESS_EMOJI = "💨";
+const OPPONENT_PROGRESS_EMOJI = "💥";
+const FINISHED_EMOJI = "🏁"; //both use a flag at the end to make it clear who wins and who loses
+const PLAYER_ONE_EMOJI = "🐝";
+const PLAYER_OPPONENT_EMOJI = "🚀";
+const PROGRESS_INCREMENTS = 20;
 
 successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
 var wpmInterval;
 var accuracyInterval;
-
 
 //mutliplayer
 var peer = null;
@@ -45,19 +39,24 @@ var playerPos = 0;
 //hackey shit
 var nextKeyToPress = 'a';
 
+//load the game when html is ready
+window.addEventListener("load", loadPage);
 function loadPage() {
+  //Hide the Peer ID
+  document.getElementById("openToLan").style.visibility = 'hidden';
+
   //load the file of URIs of each text to read later
-  fetch(window.location.href + "/texts.txt").then(function(response) { 
-    response.text().then(function(URIsOfTexts) {
+  fetch(window.location.href + "/texts.txt").then(function (response) {
+    response.text().then(function (URIsOfTexts) {
       //split by newlines
       listOfURIsOfTexts = URIsOfTexts.split("\n");
-      
+
       //pick a random text
       var randomTextURI = listOfURIsOfTexts[Math.floor(Math.random() * listOfURIsOfTexts.length)];
 
       //load the random text
-      fetch(window.location.href +randomTextURI).then(function(response2) {
-        response2.text().then(function(textToType) {
+      fetch(window.location.href + randomTextURI).then(function (response2) {
+        response2.text().then(function (textToType) {
           //Get the text length
           textLength = textToType.length;
 
@@ -93,45 +92,48 @@ function reload() {
 
 function openToLan() {
   if (peer != null) {
-    console.log("Can not reopent to lan");
+    console.log("Can not re-open to lan");
     return;
   }
 
   console.log("opening to lan");
-  
+
   document.getElementById("inputPeerID").disabled = true;
   document.getElementById("inputText").disabled = true;
-  
+
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
-  peer.on("open", function(id) {
+  peer.on("open", function (id) {
     console.log("My peer ID is: " + id);
-    document.getElementById("gameID").innerText = id;
+
+    //Display the info
+    document.getElementById("openToLan").style.visibility = 'visible';
+    document.getElementById("gameID").innerText = id.toString() + " (Share this with your opponent)";
   });
 
-  peer.on("connection", function(conn) {
+  peer.on("connection", function (conn) {
     console.log("connected");
 
     connOBJ = conn;
 
-    conn.on("data", function(data) {
+    conn.on("data", function (data) {
       if (data == "map") {
         connOBJ.send(wordsCorrect);
         connOBJ.send(wordsWrong);
 
-        document.getElementById("showable").classList = [];
+        document.getElementById("opponentProgressBar").classList = [];
         nextKeyToPress = wordsCorrect[0];
 
-        setTimeout(function(){
+        setTimeout(function () {
           document.getElementById("inputText").value = "5";
-          setTimeout(function(){ 
+          setTimeout(function () {
             document.getElementById("inputText").value = "4";
-            setTimeout(function(){ 
+            setTimeout(function () {
               document.getElementById("inputText").value = "3";
-              setTimeout(function(){ 
+              setTimeout(function () {
                 document.getElementById("inputText").value = "2";
-                setTimeout(function(){ 
+                setTimeout(function () {
                   document.getElementById("inputText").value = "1";
-                  setTimeout(function(){ 
+                  setTimeout(function () {
                     document.getElementById("inputText").value = "";
                     document.getElementById("inputText").disabled = false;
                     document.getElementById("inputText").focus();
@@ -165,17 +167,20 @@ function connectToLan() {
   document.getElementById("inputText").disabled = true;
 
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
-  peer.on("open", function(id) {
+  peer.on("open", function (id) {
     console.log("My peer ID is: " + id);
-    document.getElementById("gameID").innerText = id;
+
+    //Display the info
+    document.getElementById("openToLan").style.visibility = 'visible';
+    document.getElementById("gameID").innerText = id.toString() + " (Share this with your opponent)";
   });
 
   var conn = peer.connect(document.getElementById("inputPeerID").value);
-  conn.on("open", function() {
+  conn.on("open", function () {
     connOBJ = conn;
 
     // Receive messages
-    conn.on("data", function(data) {
+    conn.on("data", function (data) {
       console.log("Received ", data);
       switch (mapLoaded) {
         case 0:
@@ -193,20 +198,20 @@ function connectToLan() {
 
           textLength = wordsCorrect.length;
 
-          document.getElementById("showable").classList = [];
+          document.getElementById("opponentProgressBar").classList = [];
           nextKeyToPress = wordsCorrect[0];
 
-          setTimeout(function(){
+          setTimeout(function () {
             document.getElementById("inputText").value = "5";
-            setTimeout(function(){ 
+            setTimeout(function () {
               document.getElementById("inputText").value = "4";
-              setTimeout(function(){ 
+              setTimeout(function () {
                 document.getElementById("inputText").value = "3";
-                setTimeout(function(){ 
+                setTimeout(function () {
                   document.getElementById("inputText").value = "2";
-                  setTimeout(function(){ 
+                  setTimeout(function () {
                     document.getElementById("inputText").value = "1";
-                    setTimeout(function(){ 
+                    setTimeout(function () {
                       document.getElementById("inputText").value = "";
                       document.getElementById("inputText").disabled = false;
                       document.getElementById("inputText").focus();
@@ -232,7 +237,7 @@ function connectToLan() {
 function onPress(event) {
   if (event.key == nextKeyToPress) {
     totalCharactersCorrect++;
-  }else{
+  } else {
     totalCharactersIncorrect++;
   }
 }
@@ -240,17 +245,16 @@ function onPress(event) {
 function keyPressed() {
   getStartTime();
 
-  //used to keep track of how meny letters are correct
+  //used to keep track of how many letters are correct
   currentWordCharactersCorrect = 0;
-  //used to keep track of how meny letters are wrong
+  //used to keep track of how many letters are wrong
   currentWordCharactersWrong = 0;
   //has a key been wrong so far
   hasMistype = false;
 
   //loop thought all input
   for (var i = 0; i < inputText.value.length; i++) {
-    //When they press space after correctly typing the word
-    if (
+    if (//When they press space after correctly typing the word
       inputText.value[i] == wordsCorrect[numPreviousCharactersCorrect + i] &&
       inputText.value[i] == " " &&
       !hasMistype
@@ -274,16 +278,16 @@ function keyPressed() {
     ) {
       //move local cursor
       currentWordCharactersCorrect++;
-      
+
       nextKeyToPress = wordsCorrect[successfulCharsTypedSinceLastUpdate + currentWordCharactersCorrect]
 
       //if they entered the last input character
-      if((numPreviousCharactersCorrect + currentWordCharactersCorrect) == textLength) {
-        document.getElementById("playerOneCharacter").innerText += FINISHED_ONE_EMOJI; 
+      if ((numPreviousCharactersCorrect + currentWordCharactersCorrect) == textLength) {
+        document.getElementById("playerOneProgressBar").innerText += FINISHED_EMOJI;
         document.getElementById("inputText").disabled = true;
         document.getElementById("inputText").value = "You win!";
       }
-    } 
+    }
     //wrong letter
     else {
       //when user puts in a wrong letter
@@ -295,11 +299,11 @@ function keyPressed() {
   }
 
   //When the user has completed the text
-  if (numPreviousCharactersCorrect + currentWordCharactersCorrect == wordsCorrect.length) {
+  if (numPreviousCharactersCorrect + currentWordCharactersCorrect == textLength) {
     //stop updating WPM & Accuracy
     clearInterval(wpmInterval);
     clearInterval(accuracyInterval);
-    
+
     numPreviousCharactersCorrect = wordsCorrect.length;
   }
 
@@ -326,26 +330,27 @@ function keyPressed() {
 }
 
 function updateProgressBar() {
-  var playerOne = document.getElementById("playerOne");
+  //Update player one progress if there is some progress
+  if(((numPreviousCharactersCorrect / textLength) * PROGRESS_INCREMENTS) >=1) {
+    var playerOneProgressBar = document.getElementById("playerOneProgressBar");
 
-  //If there is enough progress, update the progress bar
-  if(((numPreviousCharactersCorrect / textLength) * 10) >=1)
-  playerOne.innerText = PROGRESS_ONE_EMOJI.repeat(
-    Math.floor((numPreviousCharactersCorrect / textLength) * 10)
-  );
+    //Update the progress bar
+    playerOneProgressEmojis = PLAYER_ONE_PROGRESS_EMOJI.repeat(Math.floor((numPreviousCharactersCorrect / textLength) * PROGRESS_INCREMENTS));
+    playerOneProgressBar.innerText = playerOneProgressEmojis + PLAYER_ONE_EMOJI + REMAINING_PROGRESS_EMOJI.repeat(PROGRESS_INCREMENTS- (playerOneProgressEmojis.length/2)) + FINISHED_EMOJI;
+  }
 
   //Do the same for the other player
-  if(((playerPos / textLength) * 10) >=1 )
-  playerTwo.innerText = PROGRESS_TWO_EMOJI.repeat(
-    Math.floor((playerPos / textLength) * 10)
-  );
+  if(((playerPos / textLength)*PROGRESS_INCREMENTS)>=1) {
+    opponentProgressEmojis = OPPONENT_PROGRESS_EMOJI.repeat(Math.floor((playerPos / textLength) * PROGRESS_INCREMENTS));
+    opponentProgressBar.innerText = opponentProgressEmojis + PLAYER_OPPONENT_EMOJI + REMAINING_PROGRESS_EMOJI.repeat(PROGRESS_INCREMENTS- (opponentProgressEmojis.length/2)) + FINISHED_EMOJI;
   
-  if(playerPos == textLength) {
-    document.getElementById("playerTwo").innerText += FINISHED_TWO_EMOJI;
-    document.getElementById("inputText").disabled = true;
-    document.getElementById("inputText").value = "Sorry you not a winner!";
-    clearInterval(wpmInterval);
-    clearInterval(accuracyInterval);
+    //if they finished
+    if (playerPos == textLength) {
+      document.getElementById("inputText").disabled = true;
+      document.getElementById("inputText").value = "Sorry you lost!";
+      clearInterval(wpmInterval);
+      clearInterval(accuracyInterval);
+    }
   }
 }
 
@@ -456,10 +461,10 @@ function getEndTime() {
 function getWPM(startTime) {
   d = new Date();
   raceTimeInMinutes = (d.getTime() - startTimeInMs) / 1000 / 60;
-  CPM = Math.round(textLength / raceTimeInMinutes);  //characters per minute
+  CPM = Math.round((numPreviousCharactersCorrect + currentWordCharactersCorrect) / raceTimeInMinutes);  //characters per minute
 
   AVERAGE_WORD_LENGTH = 4.79; //According to a 'rocket engineer' on quora 
-  WPM = Math.round(CPM/AVERAGE_WORD_LENGTH);
+  WPM = Math.round(CPM / AVERAGE_WORD_LENGTH);
 
   var WPMText = document.getElementById("WPM");
   WPMText.innerText = "WPM: " + WPM.toString();

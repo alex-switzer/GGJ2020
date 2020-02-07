@@ -4,31 +4,28 @@
 
 ## ToDo
 
-### Important & Urgent
-
 ### Important (High > Low)
+- [ ] singleplayer mode to encourage competitiveness
 - [ ] multiplayer: make it work more reliably. 
 - [ ] multiplayer: show stats of both players during/finish race
-- [ ] singleplayer mode to encourage competitiveness
 - [ ] start card/ Count down to start race. maybe a button to do so
 - [ ] Make code/comment refactorings for cleanliness/readability/maintainability (Certainly, if this is not intended to be abandoned after today)
 - [ ] Some visual feedback/END CARD after finishing a race. Should encourage more racing
-- [ ] multiplayer: polish finishing emoji feature
-- [ ] Correct the bee-movie texts that have words with 'O' replacing certain characters. E.g. "Oongratulations" -> "Congratulations"
 - [ ] Put some sort of introduction to tell people how to play
 
-### Urgent
 
-### Neither/Maybe Should Implement
-- [X] Show which emoji is you. 
+### Maybe Should Implement
+
 - [ ] various difficulty settings/game modes
 - [ ] Better web styling/UI
 - [ ] Make a good text generator for infinite possibilities
 - [ ] High score list/game playing statistics
 - [ ] ???
 
-
 ## Done Enough
+- [X] multiplayer: polish finishing emoji feature
+- [X] Show which emoji is you and your opponent's
+- [X] Correct the bee-movie texts that have words with 'O' replacing certain characters. E.g. "Oongratulations" -> "Congratulations"
 - [X] Fix accuracy calculation (it is very wrong) (it also increases when deleting text)
 - [X] change the emoji(s) for more family friendliness
 - [X] multiplayer: tell who wins the race

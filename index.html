@@ -18,6 +18,8 @@
 
 
 <script src="game.js"></script> 
+<script src="slider.js"></script>
+
 <!-- Get google roboto font -->
 <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet"> 
 <link rel="stylesheet" type="text/css" href="styles.css">
@@ -44,8 +46,10 @@
 
     <div class="container">
       <h2 id="racerProgress" class="boxHeading">Racer's Progress</h2> 
-      <h2 id="playerOneCharacter">(You) <span id="playerOne"></span>🚎</h2>
-      <h2 id="showable" class="hide" id="playerTwoCharacter"><span id="playerTwo"></span>🚀</h2>
+      <h3 class="subHeading" id="playerOneHeading">You</h3>
+      <h2 id="playerOneProgressBar">🐝🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🏁</h2>
+      <h3 class="subHeading" id="opponentHeading"><br>Opponent</h3>
+      <h2 id="opponentProgressBar">🚀️️️️️️️🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🟦🏁</h2>
     </div>
 
 
@@ -63,11 +67,22 @@
     </div>
 
     <div class="container">
+      <h2 class="boxHeading">Singleplayer Options</h2>
+      <h3 class="subHeading" id="botTypingSpeedHeader">BOT Typing Speed</h3>
+      <h2 id="botTypingSpeed"></h2> 
+      <div class="slideContainer">
+        <input type="range" min="5" max="200" value="40" id="botWPMSlider">
+      </div>
+    </div>
+
+    <div class="container">
       <h2 class="boxHeading">Multiplayer Options</h2>
-      <button id="inputOpenToLan">Open to lan</button>
-      <h3 id="openToLan">Peer ID: <span id="gameID"></span><br></h3>
-      <input type="text" id="inputPeerID" placeholder="Peer ID" autocomplete="off">
-      <button id="inputConnectToLan">Connect</button>
+      <h3 class="subHeading" id="hostGameHeading">Host A Game</h3>
+      <button id="inputOpenToLan">Generate Your Peer ID</button> <!-- Hide the implementation details. Don't tell the user about opening a LAN connection-->
+      <h3 id="openToLan">Peer ID: <span id="gameID"></span><br><br></h3>
+      <h3 class="subHeading" id="joinGameHeading">Join A Game</h3>
+      <input type="text" id="inputPeerID" placeholder="Opponent's Peer ID" autocomplete="off">
+      <button id="inputConnectToLan">Connect & Start Race</button>
     </div>
 
 
