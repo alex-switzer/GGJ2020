@@ -21,7 +21,7 @@
 	--link-color: rgb(0, 0, 0);
 
 	--slider-color: rgb(151, 151, 151);
-	--slider-handle: rgb(255, 0, 0);
+	--slider-handle: rgb(14, 58, 6);
 }
 
 body {
@@ -167,7 +167,15 @@ button {
 	appearance: none;
 	width: 25px;
 	height: 25px;
+	border-radius: 50%;
 	background: var(--slider-handle)
+}
+
+#botWPMSlider::-moz-range-thumb {
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	background: var(--slider-handle);
 }
 
 #botWPMSlider:hover {

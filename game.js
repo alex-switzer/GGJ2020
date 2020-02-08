@@ -29,12 +29,20 @@ successfulCharsTypedSinceLastUpdate = 0;
 textLength = 0;
 var wpmInterval;
 var accuracyInterval;
+AVERAGE_WORD_LENGTH = 4.79; //According to a 'rocket engineer' on quora
 
 //mutliplayer
 var peer = null;
 var connOBJ = null;
 var mapLoaded = 0;
 var playerPos = 0;
+
+//singleplayer bot variables
+botRaceStarted = false;
+var botStartTimeInMs = 0;
+var botEndTimeInMs = 0;
+var botProgressInterval;
+botRaceFinished = false;
 
 //hackey shit
 var nextKeyToPress = 'a';
@@ -98,8 +106,11 @@ function openToLan() {
 
   console.log("opening to lan");
 
+  //Alter the html elements for the multiplayer game
   document.getElementById("inputPeerID").disabled = true;
-  document.getElementById("inputText").disabled = true;
+  document.getElementById("inputText").disabled = true; //so the user can't type it and win before the race starts
+  document.getElementById("botWPMSlider").disabled = true; 
+  document.getElementById("opponentHeading").innerText = "\nHuman Opponent"; //make it clear who they are racing
 
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function (id) {
@@ -112,8 +123,11 @@ function openToLan() {
 
   peer.on("connection", function (conn) {
     console.log("connected");
-
     connOBJ = conn;
+
+    numPreviousCharactersCorrect = 0; //Reset in case they started typing before they started the multiplayer game
+    currentWordCharactersCorrect = 0;
+    currentWordCharactersWrong = 0;
 
     conn.on("data", function (data) {
       if (data == "map") {
@@ -165,14 +179,12 @@ function connectToLan() {
 
   document.getElementById("inputPeerID").disabled = true;
   document.getElementById("inputText").disabled = true;
-
+  document.getElementById("botWPMSlider").disabled = true; 
+  document.getElementById("opponentHeading").innerText = "\nHuman Opponent"; //make it clear who they are racing
+  
   peer = new Peer(Math.floor(Math.random() * 999999) + 1);
   peer.on("open", function (id) {
     console.log("My peer ID is: " + id);
-
-    //Display the info
-    document.getElementById("openToLan").style.visibility = 'visible';
-    document.getElementById("gameID").innerText = id.toString() + " (Share this with your opponent)";
   });
 
   var conn = peer.connect(document.getElementById("inputPeerID").value);
@@ -243,7 +255,11 @@ function onPress(event) {
 }
 
 function keyPressed() {
+  //Disable the bot WPM slider because they are in a race (with a bot or a human, doesn't matter) and have basically selected it
+  document.getElementById("botWPMSlider").disabled=true;
+  
   getStartTime();
+  startRaceBot();
 
   //used to keep track of how many letters are correct
   currentWordCharactersCorrect = 0;
@@ -300,9 +316,10 @@ function keyPressed() {
 
   //When the user has completed the text
   if (numPreviousCharactersCorrect + currentWordCharactersCorrect == textLength) {
-    //stop updating WPM & Accuracy
+    //stop updating WPM & Accuracy  & the bot
     clearInterval(wpmInterval);
     clearInterval(accuracyInterval);
+    clearInterval(botProgressInterval);
 
     numPreviousCharactersCorrect = wordsCorrect.length;
   }
@@ -310,10 +327,6 @@ function keyPressed() {
   //Send the current word that the player is on to the opponent
   if (connOBJ != null) {
     connOBJ.send(numPreviousCharactersCorrect);
-  }
-  else {
-    //bot race man
-
   }
 
   updateProgressBar(numPreviousCharactersCorrect, currentWordCharactersCorrect);
@@ -329,23 +342,75 @@ function keyPressed() {
   );
 }
 
+//Starts the AI bot that 'races' the user to finish the text
+function startRaceBot() {
+  //Dont start a race bot if the  user is doing multiplayer or one is already started
+  if(peer != null || botRaceStarted == true){ return;} 
+
+  //Disable the ability to start or join a multiplayer match, because they are now racing a bot
+  document.getElementById("inputOpenToLan").disabled=true;
+  document.getElementById("inputConnectToLan").disabled=true;
+  document.getElementById("inputPeerID").disabled=true;
+
+  var selectedBotWPM = document.getElementById("botWPMSlider").value;
+
+  //get the start time of the bot
+  var botDateTime = new Date();
+  botStartTimeInMs = botDateTime.getTime();
+
+  //Calculate when the bot will finish, given the WPM it 'types' at
+  var botCPS = (selectedBotWPM/60)*AVERAGE_WORD_LENGTH;
+  var botTimeToFinishInMs = (textLength / botCPS)*1000;
+  botEndTimeInMs = botStartTimeInMs + botTimeToFinishInMs;
+
+  //start the interval to check to update the progress bar each 20 ms
+  botProgressInterval = setInterval(updateProgressBar, 20);
+  botRaceStarted = true;
+}
+
 function updateProgressBar() {
-  //Update player one progress if there is some progress
+  //Update Player One (User) progress bar
   if(((numPreviousCharactersCorrect / textLength) * PROGRESS_INCREMENTS) >=1) {
     var playerOneProgressBar = document.getElementById("playerOneProgressBar");
-
-    //Update the progress bar
     playerOneProgressEmojis = PLAYER_ONE_PROGRESS_EMOJI.repeat(Math.floor((numPreviousCharactersCorrect / textLength) * PROGRESS_INCREMENTS));
     playerOneProgressBar.innerText = playerOneProgressEmojis + PLAYER_ONE_EMOJI + REMAINING_PROGRESS_EMOJI.repeat(PROGRESS_INCREMENTS- (playerOneProgressEmojis.length/2)) + FINISHED_EMOJI;
   }
 
-  //Do the same for the other player
+  //Update Player Two (Human opponent) progress bar
   if(((playerPos / textLength)*PROGRESS_INCREMENTS)>=1) {
     opponentProgressEmojis = OPPONENT_PROGRESS_EMOJI.repeat(Math.floor((playerPos / textLength) * PROGRESS_INCREMENTS));
     opponentProgressBar.innerText = opponentProgressEmojis + PLAYER_OPPONENT_EMOJI + REMAINING_PROGRESS_EMOJI.repeat(PROGRESS_INCREMENTS- (opponentProgressEmojis.length/2)) + FINISHED_EMOJI;
   
     //if they finished
     if (playerPos == textLength) {
+      document.getElementById("inputText").disabled = true;
+      document.getElementById("inputText").value = "Sorry you lost!";
+      clearInterval(wpmInterval);
+      clearInterval(accuracyInterval);
+    }
+  }
+
+  //Update BOT progress bar if its racing
+  if(botRaceStarted == true && botRaceFinished == false) {
+    var currentTimeInMs = d.getTime() + 1; //current time in ms is 1 ms behind bot time for some reason. Account for this to stop negative time from happening
+
+    //Get the percentage of completion of the bot 
+    var elapsedBotTime = currentTimeInMs - botStartTimeInMs;
+    var botPortionCompleted = elapsedBotTime / (botEndTimeInMs - botStartTimeInMs); 
+    console.log("bot completion is at: " + botPortionCompleted);
+    
+    //Get the progress emoji
+    botProgressEmojis = OPPONENT_PROGRESS_EMOJI.repeat(Math.floor(botPortionCompleted*PROGRESS_INCREMENTS)); 
+
+    //update the progress bar
+    opponentProgressBar.innerText = botProgressEmojis + PLAYER_OPPONENT_EMOJI + REMAINING_PROGRESS_EMOJI.repeat(PROGRESS_INCREMENTS- (botProgressEmojis.length/2)) + FINISHED_EMOJI;
+
+    //When the bot finishes
+    if(botPortionCompleted >= 1) {
+      clearInterval(botProgressInterval); //stop the timer
+      botRaceFinished = true;
+
+      //The user lost, so lock the input bar and tell them they lost
       document.getElementById("inputText").disabled = true;
       document.getElementById("inputText").value = "Sorry you lost!";
       clearInterval(wpmInterval);
@@ -462,8 +527,7 @@ function getWPM(startTime) {
   d = new Date();
   raceTimeInMinutes = (d.getTime() - startTimeInMs) / 1000 / 60;
   CPM = Math.round((numPreviousCharactersCorrect + currentWordCharactersCorrect) / raceTimeInMinutes);  //characters per minute
-
-  AVERAGE_WORD_LENGTH = 4.79; //According to a 'rocket engineer' on quora 
+ 
   WPM = Math.round(CPM / AVERAGE_WORD_LENGTH);
 
   var WPMText = document.getElementById("WPM");
